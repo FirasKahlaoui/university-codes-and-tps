@@ -6,6 +6,7 @@
 
 📂 TP1/
    └── Cesar Encryption and Streamlit Interface
+   
       - Implements the **Cesar encryption algorithm** and provides a **Streamlit** web interface to test encryption on user input.
       - Files: 
         - `Cryptage_Cesar.py`: Handles the encryption logic.
