@@ -6,6 +6,7 @@ from email_service import send_verification_email
 from two_factor import generate_verification_code
 from forms import RegistrationForm, LoginForm
 from extensions import db, mail
+from flask_wtf import CSRFProtect
 
 # Load environment variables from .env file
 load_dotenv()  # Load the environment variables from the .env file
@@ -21,6 +22,7 @@ app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')  # Fetch password from 
 
 db.init_app(app)
 mail.init_app(app)
+csrf = CSRFProtect(app)  # Initialize CSRF protection
 
 # Create your database model here (User model)
 from database import create_db, User
@@ -33,7 +35,7 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         try:
-            hashed_password = generate_password_hash(form.password.data, method='sha256')
+            hashed_password = generate_password_hash(form.password.data, method='pbkdf2:sha256')
             new_user = User(username=form.username.data, email=form.email.data, password=hashed_password)
             db.session.add(new_user)
             db.session.commit()
@@ -43,6 +45,13 @@ def register():
             db.session.rollback()  # Rollback the session in case of error
             flash(f'An error occurred: {e}', 'danger')
             print(f'Error: {e}')  # Print the error to the terminal for debugging
+    else:
+        # Print form errors to the terminal for debugging
+        print("Form validation failed. Errors:")
+        for field, errors in form.errors.items():
+            for error in errors:
+                print(f"Error in {field}: {error}")
+        flash('Form validation failed. Please check your input.', 'danger')
     return render_template('register.html', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
