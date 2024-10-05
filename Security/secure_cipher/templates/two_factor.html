@@ -1,10 +1,12 @@
 {% extends 'layout.html' %}
-
 {% block title %}Two-Factor Authentication{% endblock %}
-
 {% block content %}
 <h2>Two-Factor Authentication</h2>
 <form method="POST">
     <div class="mb-3">
         <label for="verification_code" class="form-label">Enter Verification Code</label>
-        <input type="text" class="form-control" id="verification
+        <input type="text" class="form-control" id="verification_code" name="verification_code">
+    </div>
+    <button type="submit" class="btn btn-primary">Verify</button>
+</form>
+{% endblock %}

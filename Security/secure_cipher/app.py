@@ -9,20 +9,21 @@ from extensions import db, mail
 from flask_wtf import CSRFProtect
 
 # Load environment variables from .env file
-load_dotenv()  # Load the environment variables from the .env file
+load_dotenv() 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'default_secret_key')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
-app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER', 'smtp.example.com')  # Change to your SMTP server
+app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER', 'smtp.office365.com')
 app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', 587))
-app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS', 'True') == 'True'  # Convert to boolean
-app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')  # Fetch email from environment variables
-app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')  # Fetch password from environment variables
+app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS', 'True') == 'True'
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER','noreply@example.com') 
 
 db.init_app(app)
 mail.init_app(app)
-csrf = CSRFProtect(app)  # Initialize CSRF protection
+csrf = CSRFProtect(app) 
 
 # Create your database model here (User model)
 from database import create_db, User
@@ -61,7 +62,10 @@ def login():
         user = User.query.filter_by(username=form.username.data).first()
         if user and check_password_hash(user.password, form.password.data):
             session['user_id'] = user.id
-            flash('Login successful!', 'success')
+            verification_code = generate_verification_code()
+            session['verification_code'] = str(verification_code)
+            send_verification_email(user.email, verification_code)
+            flash('Login successful! Verification code sent to your email.', 'success')
             return redirect(url_for('two_factor'))
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
