@@ -1,82 +1,67 @@
 import streamlit as st
-from cryptography.fernet import Fernet
+from database import create_table, register_user, check_user
+from two_factor import send_verification_code
+from Cryptage_Cesar import encrypt_message, decrypt_message
 
-# Generate a key for encryption
-key = Fernet.generate_key()
-cipher_suite = Fernet(key)
+# Ensure the database table is created
+create_table()
 
-def encrypt_message(message):
-    return cipher_suite.encrypt(message.encode()).decode()
+# Streamlit app title
+st.title("🔐 Secure Cipher with 2FA")
 
-def decrypt_message(encrypted_message):
-    return cipher_suite.decrypt(encrypted_message.encode()).decode()
-
-# User authentication
-def login(username, password):
-    # Simple hardcoded credentials for demonstration
-    return username == "FirasKahlaoui" and password == "Firascrypt"
-
-# Streamlit app
-st.title("🔐 Secure Cipher")
-
-st.markdown("""
-## Welcome to the Secure Cipher Application
-Use this application to encrypt and decrypt messages using a secure cipher.
-""")
-
-# Login form
-if 'authenticated' not in st.session_state:
-    st.session_state.authenticated = False
-
-# Separate login/logout handling to avoid multiple button clicks
-if not st.session_state.authenticated:
-    st.sidebar.header("Login")
+# Add a sidebar for navigation
+st.sidebar.header("Navigation")
+if st.sidebar.checkbox("Register"):
     username = st.sidebar.text_input("Username")
     password = st.sidebar.text_input("Password", type="password")
+    if st.sidebar.button("Register"):
+        if register_user(username, password):
+            st.sidebar.success("User registered successfully!")
+        else:
+            st.sidebar.error("Username already exists.")
+
+if st.sidebar.checkbox("Login"):
+    username = st.sidebar.text_input("Username (Login)")
+    password = st.sidebar.text_input("Password (Login)", type="password")
     if st.sidebar.button("Login"):
-        if login(username, password):
-            st.session_state.authenticated = True
-            st.experimental_rerun()  # Forces a rerun after successful login
-        else:
-            st.sidebar.error("Invalid username or password.")
-else:
-    st.sidebar.header("Inputs")
+        if check_user(username, password):
+            email = st.sidebar.text_input("Email for 2FA")
+            verification_code = send_verification_code(email)
+            user_code = st.sidebar.text_input("Enter verification code sent to your email:")
+            if user_code == str(verification_code):
+                st.sidebar.success("Logged in successfully!")
 
-    # Fields for encryption/decryption
-    message = st.sidebar.text_area("Text to encrypt/decrypt:", height=150)
+                # Encryption/Decryption Interface
+                message = st.text_area("Message")
+                key = st.number_input("Caesar Cipher Key", min_value=1, max_value=25)
 
-    # Encrypt and Decrypt options
-    if st.sidebar.button("Encrypt"):
-        if message:
-            encrypted_message = encrypt_message(message)
-            st.markdown(f"### Encrypted Text:\n**<span style='font-size:20px; color:#FF1493;'>{encrypted_message}</span>**", unsafe_allow_html=True)
-        else:
-            st.sidebar.error("Message cannot be empty.")
+                # Buttons for encryption and decryption
+                if st.button("Encrypt"):
+                    if message:
+                        encrypted_message = encrypt_message(message, key)
+                        st.success(f"Encrypted Message: {encrypted_message}")
+                    else:
+                        st.error("Please enter a message to encrypt.")
 
-    if st.sidebar.button("Decrypt"):
-        if message:
-            decrypted_message = decrypt_message(message)
-            st.markdown(f"### Decrypted Text:\n**<span style='font-size:20px; color:#FF1493;'>{decrypted_message}</span>**", unsafe_allow_html=True)
-        else:
-            st.sidebar.error("Message cannot be empty.")
-    
-    # Clear button to reset encryption/decryption fields
-    if st.sidebar.button("Clear Fields"):
-        st.sidebar.text_area("Text to encrypt/decrypt:", height=150, value="")
-        st.experimental_rerun()
+                if st.button("Decrypt"):
+                    if message:
+                        decrypted_message = decrypt_message(message, key)
+                        st.success(f"Decrypted Message: {decrypted_message}")
+                    else:
+                        st.error("Please enter a message to decrypt.")
 
-    # Logout button
-    if st.sidebar.button("Logout"):
-        st.session_state.authenticated = False
-        st.experimental_rerun()
+                # Clear fields button
+                if st.button("Clear Fields"):
+                    st.session_state.message = ""
+                    st.session_state.key = 0
+                    st.success("Fields cleared!")
 
-# HTTPS and other advanced buttons (placeholders for now)
-st.markdown("### Advanced Options")
-if st.button("Enable HTTPS"):
-    st.success("HTTPS enabled!")
-if st.button("Two-Factor Authentication"):
-    st.success("Two-factor authentication enabled!")
+                # Logout button
+                if st.button("Logout"):
+                    st.sidebar.success("Logged out successfully.")
+                    # Optionally, you can redirect to the login/register page here
 
+# Footer
 st.markdown("""
 ---
 *Developed with ❤️ by Firas Kahlaoui*.
