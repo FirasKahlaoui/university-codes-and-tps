@@ -59,7 +59,6 @@ if st.sidebar.checkbox("Login"):
                 # Logout button
                 if st.button("Logout"):
                     st.sidebar.success("Logged out successfully.")
-                    # Optionally, you can redirect to the login/register page here
 
 # Footer
 st.markdown("""
