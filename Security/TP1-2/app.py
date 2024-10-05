@@ -28,6 +28,7 @@ Use this application to encrypt and decrypt messages using a secure cipher.
 if 'authenticated' not in st.session_state:
     st.session_state.authenticated = False
 
+# Separate login/logout handling to avoid multiple button clicks
 if not st.session_state.authenticated:
     st.sidebar.header("Login")
     username = st.sidebar.text_input("Username")
@@ -35,14 +36,16 @@ if not st.session_state.authenticated:
     if st.sidebar.button("Login"):
         if login(username, password):
             st.session_state.authenticated = True
-            st.sidebar.success("Login successful!")
+            st.experimental_rerun()  # Forces a rerun after successful login
         else:
             st.sidebar.error("Invalid username or password.")
 else:
     st.sidebar.header("Inputs")
-    message = st.sidebar.text_area("Text to encrypt/decrypt:", height=150)
-    key = st.sidebar.number_input("Encryption key:", min_value=0, max_value=25, step=1)
 
+    # Fields for encryption/decryption
+    message = st.sidebar.text_area("Text to encrypt/decrypt:", height=150)
+
+    # Encrypt and Decrypt options
     if st.sidebar.button("Encrypt"):
         if message:
             encrypted_message = encrypt_message(message)
@@ -56,10 +59,23 @@ else:
             st.markdown(f"### Decrypted Text:\n**<span style='font-size:20px; color:#FF1493;'>{decrypted_message}</span>**", unsafe_allow_html=True)
         else:
             st.sidebar.error("Message cannot be empty.")
+    
+    # Clear button to reset encryption/decryption fields
+    if st.sidebar.button("Clear Fields"):
+        st.sidebar.text_area("Text to encrypt/decrypt:", height=150, value="")
+        st.experimental_rerun()
 
+    # Logout button
     if st.sidebar.button("Logout"):
         st.session_state.authenticated = False
-        st.sidebar.success("Logged out successfully.")
+        st.experimental_rerun()
+
+# HTTPS and other advanced buttons (placeholders for now)
+st.markdown("### Advanced Options")
+if st.button("Enable HTTPS"):
+    st.success("HTTPS enabled!")
+if st.button("Two-Factor Authentication"):
+    st.success("Two-factor authentication enabled!")
 
 st.markdown("""
 ---
