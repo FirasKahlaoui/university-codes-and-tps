@@ -2,6 +2,7 @@ from flask_mail import Message
 from extensions import mail
 
 def send_verification_email(user_email, verification_code):
+    print(f"Sending email to {user_email} with code {verification_code}")
     try:
         msg = Message('Verification Code', recipients=[user_email])
         msg.body = f'Your verification code is {verification_code}.'

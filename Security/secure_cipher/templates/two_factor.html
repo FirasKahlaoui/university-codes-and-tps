@@ -3,9 +3,10 @@
 {% block content %}
 <h2>Two-Factor Authentication</h2>
 <form method="POST">
+    {{ form.hidden_tag() }} <!-- Include CSRF token -->
     <div class="mb-3">
-        <label for="verification_code" class="form-label">Enter Verification Code</label>
-        <input type="text" class="form-control" id="verification_code" name="verification_code">
+        {{ form.verification_code.label(class="form-label") }}
+        {{ form.verification_code(class="form-control") }}
     </div>
     <button type="submit" class="btn btn-primary">Verify</button>
 </form>

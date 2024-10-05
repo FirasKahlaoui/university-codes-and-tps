@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
 from email_service import send_verification_email
 from two_factor import generate_verification_code
-from forms import RegistrationForm, LoginForm
+from forms import RegistrationForm, LoginForm, TwoFactorForm
 from extensions import db, mail
 from flask_wtf import CSRFProtect
 
@@ -73,8 +73,9 @@ def login():
 
 @app.route('/two_factor', methods=['GET', 'POST'])
 def two_factor():
-    if request.method == 'POST':
-        input_code = request.form.get('verification_code')
+    form = TwoFactorForm()
+    if form.validate_on_submit():
+        input_code = form.verification_code.data
         actual_code = session.get('verification_code')
         if input_code == actual_code:
             user = User.query.get(session['user_id'])
@@ -83,7 +84,7 @@ def two_factor():
             return redirect(url_for('home'))
         else:
             flash('Invalid verification code', 'danger')
-    return render_template('two_factor.html')
+    return render_template('two_factor.html', form=form)
 
 @app.route('/home')
 def home():
@@ -95,6 +96,13 @@ def home():
         return redirect(url_for('two_factor'))
     
     return render_template('home.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('user_id', None)
+    session.pop('verification_code', None)
+    flash('You have been logged out.', 'success')
+    return redirect(url_for('login'))
 
 if __name__ == '__main__':
     app.run(debug=True)
