@@ -8,8 +8,8 @@
             {{ form.hidden_tag() }} <!-- Include CSRF token -->
             <div class="mb-3">
                 {{ form.verification_code.label(class="form-label") }}
-                {{ form.verification_code(class="form-control", placeholder="Enter verification code",
-                aria-describedby="verificationHelp") }}
+                {{ form.verification_code(**{'class': 'form-control', 'placeholder': 'Enter verification code',
+                'aria-describedby': 'verificationHelp'}) }}
                 <div id="verificationHelp" class="form-text">Check your email for the verification code.</div>
             </div>
             <button type="submit" class="btn btn-primary w-100">Verify</button>

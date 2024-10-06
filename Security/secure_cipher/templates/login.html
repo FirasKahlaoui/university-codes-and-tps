@@ -8,12 +8,14 @@
             {{ form.hidden_tag() }}
             <div class="mb-3">
                 {{ form.username.label(class="form-label") }}
-                {{ form.username(class="form-control", placeholder="Enter username", aria-describedby="usernameHelp") }}
+                {{ form.username(**{'class': 'form-control', 'placeholder': 'Enter username', 'aria-describedby':
+                'usernameHelp'}) }}
                 <div id="usernameHelp" class="form-text">Enter your username.</div>
             </div>
             <div class="mb-3">
                 {{ form.password.label(class="form-label") }}
-                {{ form.password(class="form-control", placeholder="Enter password", aria-describedby="passwordHelp") }}
+                {{ form.password(**{'class': 'form-control', 'placeholder': 'Enter password', 'aria-describedby':
+                'passwordHelp'}) }}
                 <div id="passwordHelp" class="form-text">Enter your password.</div>
             </div>
             <button type="submit" class="btn btn-primary w-100">Login</button>
