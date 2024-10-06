@@ -1,0 +1,22 @@
+body {
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+}
+
+.navbar {
+    margin-bottom: 20px;
+}
+
+.card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.welcome-container {
+    margin-top: 50px;
+    text-align: center;
+}
+
+.welcome-message {
+    font-size: 24px;
+    color: #343a40;
+}
