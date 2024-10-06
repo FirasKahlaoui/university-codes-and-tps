@@ -1,22 +1,58 @@
 body {
-    background-color: #f8f9fa;
-    font-family: Arial, sans-serif;
+    background-color: #f4f6f9;
+    font-family: 'Poppins', sans-serif;
+    color: #343a40;
+    line-height: 1.6;
 }
 
 .navbar {
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    padding: 15px 30px;
+    background-color: #007bff;
+    border-radius: 8px;
 }
 
 .card {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    background-color: #fff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
 .welcome-container {
-    margin-top: 50px;
+    margin-top: 70px;
     text-align: center;
 }
 
 .welcome-message {
-    font-size: 24px;
-    color: #343a40;
+    font-size: 28px;
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 20px;
+}
+
+.welcome-container p {
+    font-size: 18px;
+    color: #6c757d;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+button:hover {
+    background-color: #218838;
+    transform: scale(1.05);
 }
