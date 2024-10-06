@@ -1,13 +1,19 @@
 {% extends 'layout.html' %}
 {% block title %}Two-Factor Authentication{% endblock %}
 {% block content %}
-<h2>Two-Factor Authentication</h2>
-<form method="POST">
-    {{ form.hidden_tag() }} <!-- Include CSRF token -->
-    <div class="mb-3">
-        {{ form.verification_code.label(class="form-label") }}
-        {{ form.verification_code(class="form-control") }}
+<div class="card mx-auto mt-5" style="max-width: 400px;">
+    <div class="card-body">
+        <h2 class="card-title text-center">Two-Factor Authentication</h2>
+        <form method="POST">
+            {{ form.hidden_tag() }} <!-- Include CSRF token -->
+            <div class="mb-3">
+                {{ form.verification_code.label(class="form-label") }}
+                {{ form.verification_code(class="form-control", placeholder="Enter verification code",
+                aria-describedby="verificationHelp") }}
+                <div id="verificationHelp" class="form-text">Check your email for the verification code.</div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Verify</button>
+        </form>
     </div>
-    <button type="submit" class="btn btn-primary">Verify</button>
-</form>
+</div>
 {% endblock %}
