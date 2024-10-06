@@ -1,25 +1,33 @@
 {% extends 'layout.html' %}
 {% block title %}Register{% endblock %}
 {% block content %}
-<h2>Register</h2>
-<form method="POST">
-    {{ form.hidden_tag() }}
-    <div class="mb-3">
-        {{ form.username.label(class="form-label") }}
-        {{ form.username(class="form-control") }}
+<div class="card mx-auto mt-5" style="max-width: 400px;">
+    <div class="card-body">
+        <h2 class="card-title text-center">Register</h2>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                {{ form.username.label(class="form-label") }}
+                {{ form.username(class="form-control", placeholder="Enter username", aria-describedby="usernameHelp") }}
+                <div id="usernameHelp" class="form-text">Choose a unique username.</div>
+            </div>
+            <div class="mb-3">
+                {{ form.email.label(class="form-label") }}
+                {{ form.email(class="form-control", placeholder="Enter email", aria-describedby="emailHelp") }}
+                <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+            </div>
+            <div class="mb-3">
+                {{ form.password.label(class="form-label") }}
+                {{ form.password(class="form-control", placeholder="Enter password", aria-describedby="passwordHelp") }}
+                <div id="passwordHelp" class="form-text">Choose a strong password.</div>
+            </div>
+            <div class="mb-3">
+                {{ form.confirm_password.label(class="form-label") }}
+                {{ form.confirm_password(class="form-control", placeholder="Confirm password", aria-describedby="confirmPasswordHelp") }}
+                <div id="confirmPasswordHelp" class="form-text">Re-enter your password for confirmation.</div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Register</button>
+        </form>
     </div>
-    <div class="mb-3">
-        {{ form.email.label(class="form-label") }}
-        {{ form.email(class="form-control") }}
-    </div>
-    <div class="mb-3">
-        {{ form.password.label(class="form-label") }}
-        {{ form.password(class="form-control") }}
-    </div>
-    <div class="mb-3">
-        {{ form.confirm_password.label(class="form-label") }}
-        {{ form.confirm_password(class="form-control") }}
-    </div>
-    <button type="submit" class="btn btn-primary">Register</button>
-</form>
+</div>
 {% endblock %}
