@@ -4,12 +4,14 @@
 
 ### Repository Structure
 
+```
 📂 MongoDB/
    └── TP1/
        - Implements a cinema management system using MongoDB.
        - Files:
            - `Cinema.js`: Contains the MongoDB queries and operations for the cinema management system.
            - `README.md`: Documentation for the MongoDB TP1 project.
+```
 
 📂 Security/
    └── secure_cipher/
