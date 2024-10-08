@@ -4,7 +4,7 @@
 
 ### Repository Structure
 
-```
+```plaintext
 📂 MongoDB/
    └── TP1/
        - Implements a cinema management system using MongoDB.
