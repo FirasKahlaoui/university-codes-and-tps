@@ -13,6 +13,7 @@
            - `README.md`: Documentation for the MongoDB TP1 project.
 ```
 
+```
 📂 Security/
    └── secure_cipher/
        - Implements a secure cipher application with various security features.
@@ -41,7 +42,9 @@
            - `database.py`: Handles database operations.
            - `two_factor.py`: Implements two-factor authentication.
            - `__pycache__/`: Compiled Python files.
+```
 
+```
 📂 Visualisation/
    └── TP1/
        - Implements a user management system with database operations.
@@ -54,3 +57,4 @@
 
 📂 README.md
    - This file, providing an overview of the repository structure and contents.
+```
