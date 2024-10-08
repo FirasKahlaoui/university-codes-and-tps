@@ -1,4 +1,4 @@
-from models import Base, engine
+from Visualisation.TP1.models import Base, engine
 
 # Create all tables in the engine.
 Base.metadata.create_all(engine)

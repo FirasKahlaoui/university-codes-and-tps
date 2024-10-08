@@ -1,4 +1,4 @@
-from models import User, session
+from Visualisation.TP1.models import User, session
 
 users = [
     User(first_name='Ahmed', last_name='Almaliki', salary=60000.0, education_level='Master', age=35),
