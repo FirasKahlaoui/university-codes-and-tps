@@ -9,35 +9,34 @@ from app.decorators import nocache
 
 main = Blueprint('main', __name__)
 
+
 @main.route("/login", methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        admin = Admin.query.filter_by(email=form.email.data).first()
-
-        if user:
-            print(f"User found: {user.email}")
-        if admin:
-            print(f"Admin found: {admin.email}")
-
-        if user and bcrypt.check_password_hash(user.password, form.password.data):
-            login_user(user)
-            log_action(user.id, 'Logged in')
-            return redirect(url_for('main.dashboard'))
-        elif admin and bcrypt.check_password_hash(admin.password, form.password.data):
-            login_user(admin)
-            log_action(admin.id, 'Logged in')
-            return redirect(url_for('main.admin_dashboard'))
-        else:
-            flash('Login Unsuccessful. Please check your email and password', 'danger')
+        login_type = form.login_type.data
+        if login_type == 'user':
+            user = User.query.filter_by(email=form.email.data).first()
+            if user and bcrypt.check_password_hash(user.password, form.password.data):
+                login_user(user)
+                log_action(user.id, 'Logged in')
+                return redirect(url_for('main.dashboard'))
+        elif login_type == 'admin':
+            admin = Admin.query.filter_by(email=form.email.data).first()
+            if admin and bcrypt.check_password_hash(admin.password, form.password.data):
+                login_user(admin)
+                log_action(admin.id, 'Logged in')
+                return redirect(url_for('main.admin_dashboard'))
+        flash('Login Unsuccessful. Please check your email and password', 'danger')
     return render_template('login.html', form=form)
+
 
 @main.route("/dashboard")
 @login_required
 @nocache
 def dashboard():
     return render_template('dashboard.html')
+
 
 @main.route("/admin_dashboard", methods=['GET', 'POST'])
 @login_required
@@ -62,6 +61,7 @@ def admin_dashboard():
     users = User.query.all()
     logs = Log.query.all()
     return render_template('admin_dashboard.html', users=users, logs=logs, form=form)
+
 
 @main.route("/logout")
 @login_required

@@ -1,11 +1,13 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
-from wtforms.validators import DataRequired, Email, EqualTo, Length
+from wtforms import StringField, PasswordField, SubmitField, RadioField
+from wtforms.validators import DataRequired, Email
 
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
+    login_type = RadioField('Login Type', choices=[(
+        'user', 'User'), ('admin', 'Admin')], validators=[DataRequired()])
     submit = SubmitField('Login')
 
 
