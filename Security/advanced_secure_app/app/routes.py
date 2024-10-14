@@ -46,7 +46,13 @@ def dashboard():
 @login_required
 @nocache
 def admin_dashboard():
-    return render_template('admin_dashboard.html')
+    form = AdminCreateUserForm()  # Create an instance of the form
+    if form.validate_on_submit():
+        # Handle form submission logic here
+        pass
+    users = User.query.all()  # Fetch all users
+    logs = Log.query.all()  # Fetch all logs
+    return render_template('admin_dashboard.html', form=form, users=users, logs=logs)
 
 
 @main.route("/logout")
