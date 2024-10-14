@@ -15,6 +15,7 @@
             </div>
             <div class="mb-3">
                 <label class="form-label">Login as</label>
+                {% if form.login_type.choices %}
                 <div class="form-check">
                     {{ form.login_type[0](class="form-check-input") }}
                     {{ form.login_type[0].label(class="form-check-label") }}
@@ -23,6 +24,9 @@
                     {{ form.login_type[1](class="form-check-input") }}
                     {{ form.login_type[1].label(class="form-check-label") }}
                 </div>
+                {% else %}
+                <p>No login types available.</p>
+                {% endif %}
             </div>
             <button type="submit" class="btn btn-primary w-100">Login</button>
         </form>
