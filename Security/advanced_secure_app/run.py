@@ -1,6 +1,5 @@
 from app import create_app
-from flask import redirect, url_for, render_template
-from app.forms import LoginForm
+from flask import redirect, url_for
 
 app = create_app()
 

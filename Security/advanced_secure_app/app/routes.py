@@ -8,6 +8,7 @@ from app.decorators import nocache
 
 main = Blueprint('main', __name__)
 
+
 @main.route("/login", methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -19,6 +20,7 @@ def login():
             return redirect(url_for('main.dashboard'))
         flash('Login Unsuccessful. Please check your email and password', 'danger')
     return render_template('login.html', form=form)
+
 
 @main.route("/admin_login", methods=['GET', 'POST'])
 def admin_login():
@@ -32,17 +34,20 @@ def admin_login():
         flash('Login Unsuccessful. Please check your email and password', 'danger')
     return render_template('admin_login.html', form=form)
 
+
 @main.route("/dashboard")
 @login_required
 @nocache
 def dashboard():
     return render_template('dashboard.html')
 
+
 @main.route("/admin_dashboard", methods=['GET', 'POST'])
 @login_required
 @nocache
 def admin_dashboard():
     return render_template('admin_dashboard.html')
+
 
 @main.route("/logout")
 @login_required
