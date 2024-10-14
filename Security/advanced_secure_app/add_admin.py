@@ -1,15 +1,18 @@
 from app import create_app
-from app.extensions import db
+from app.extensions import db, bcrypt
 from app.models import Admin
+
 
 def add_admin(username, email, password):
     app = create_app()
     with app.app_context():
-        admin = Admin(username=username, email=email)
-        admin.set_password(password)
+        hashed_password = bcrypt.generate_password_hash(
+            password).decode('utf-8')
+        admin = Admin(username=username, email=email, password=hashed_password)
         db.session.add(admin)
         db.session.commit()
         print(f"Admin user {username} added successfully!")
+
 
 if __name__ == "__main__":
     username = "admin"
