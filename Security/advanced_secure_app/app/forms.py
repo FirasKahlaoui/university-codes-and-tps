@@ -1,7 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, RadioField
-from wtforms.validators import DataRequired, Email
-
+from wtforms import StringField, PasswordField, SubmitField, RadioField, BooleanField
+from wtforms.validators import DataRequired, Email, Length, EqualTo
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -9,7 +8,6 @@ class LoginForm(FlaskForm):
     login_type = RadioField('Login Type', choices=[(
         'user', 'User'), ('admin', 'Admin')], validators=[DataRequired()])
     submit = SubmitField('Login')
-
 
 class AdminCreateUserForm(FlaskForm):
     username = StringField('Username', validators=[
