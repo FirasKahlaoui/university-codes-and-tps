@@ -10,7 +10,8 @@ def create_app():
     print("Current Working Directory:", os.getcwd())
     print("Template Folder Path:", os.path.join(os.getcwd(), 'templates'))
 
-    app = Flask(__name__, template_folder='templates', static_folder='static')
+    app = Flask(__name__, template_folder='templates',
+                static_folder='app/static')
     app.config['SECRET_KEY'] = 'your_secret_key'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 

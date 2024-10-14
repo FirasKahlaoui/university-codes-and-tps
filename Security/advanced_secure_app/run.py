@@ -1,7 +1,8 @@
 from app import create_app
-from flask import redirect, url_for
+from flask import Flask, redirect, url_for
 
-app = create_app()
+app = Flask(__name__, static_folder='app/static')
+app = create_app(app)
 
 
 @app.route('/')

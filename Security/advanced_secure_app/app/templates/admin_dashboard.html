@@ -1,7 +1,8 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
 {% block content %}
 <div class="container mt-5">
-    <h2>Create a New User</h2>
+    <h2 class="text-center">Admin Dashboard</h2>
     <form method="POST">
         {{ form.hidden_tag() }}
         <div class="mb-3">
@@ -21,54 +22,31 @@
             {{ form.confirm_password(class="form-control", placeholder="Confirm password") }}
         </div>
         <div class="mb-3 form-check">
-            {{ form.is_admin.label(class="form-check-label") }}
             {{ form.is_admin(class="form-check-input") }}
+            {{ form.is_admin.label(class="form-check-label") }}
         </div>
         <button type="submit" class="btn btn-primary">Create User</button>
     </form>
     <hr>
-    <h2>Users</h2>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Admin</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
-            <tr>
-                <td>{{ user.id }}</td>
-                <td>{{ user.username }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ user.is_admin }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <h3>Users</h3>
+    <ul>
+        {% for user in users %}
+        <li>{{ user.username }} ({{ user.email }})</li>
+        {% endfor %}
+    </ul>
     <hr>
-    <h2>Logs</h2>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Action</th>
-                <th>User ID</th>
-                <th>Timestamp</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for log in logs %}
-            <tr>
-                <td>{{ log.id }}</td>
-                <td>{{ log.action }}</td>
-                <td>{{ log.user_id }}</td>
-                <td>{{ log.timestamp }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <h3>Admins</h3>
+    <ul>
+        {% for admin in admins %}
+        <li>{{ admin.username }} ({{ admin.email }})</li>
+        {% endfor %}
+    </ul>
+    <hr>
+    <h3>Logs</h3>
+    <ul>
+        {% for log in logs %}
+        <li>{{ log.timestamp }} - {{ log.action }}</li>
+        {% endfor %}
+    </ul>
 </div>
 {% endblock %}
