@@ -49,25 +49,30 @@ def admin_dashboard():
     form = AdminCreateUserForm()
     if form.validate_on_submit():
         # Check if email already exists
-        existing_user = User.query.filter_by(email=form.email.data).first() or Admin.query.filter_by(email=form.email.data).first()
+        existing_user = User.query.filter_by(email=form.email.data).first(
+        ) or Admin.query.filter_by(email=form.email.data).first()
         if existing_user:
             flash('Email already exists. Please use a different email.', 'danger')
         elif form.password.data != form.confirm_password.data:
             flash('Passwords do not match. Please try again.', 'danger')
         else:
             try:
-                hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+                hashed_password = bcrypt.generate_password_hash(
+                    form.password.data).decode('utf-8')
                 if form.is_admin.data:
-                    user = Admin(username=form.username.data, email=form.email.data, password=hashed_password)
+                    user = Admin(username=form.username.data,
+                                 email=form.email.data, password=hashed_password)
                 else:
-                    user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+                    user = User(username=form.username.data,
+                                email=form.email.data, password=hashed_password)
                 db.session.add(user)
                 db.session.commit()
                 log_action(current_user.id, f'Created user {user.username}')
                 flash('User created successfully!', 'success')
             except Exception as e:
                 db.session.rollback()
-                flash('An error occurred while creating the user. Please try again.', 'danger')
+                flash(
+                    'An error occurred while creating the user. Please try again.', 'danger')
                 print(f"Error: {e}")
             return redirect(url_for('main.admin_dashboard'))
     users = User.query.all()
