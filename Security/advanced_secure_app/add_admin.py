@@ -2,7 +2,6 @@ from app import create_app
 from app.extensions import db
 from app.models import Admin
 
-
 def add_admin(username, email, password):
     app = create_app()
     with app.app_context():
@@ -12,9 +11,8 @@ def add_admin(username, email, password):
         db.session.commit()
         print(f"Admin user {username} added successfully!")
 
-
 if __name__ == "__main__":
-    username = "firas"
+    username = "admin"
     email = "kahlaoui@gmail.com"
     password = "topadmin"
     add_admin(username, email, password)
