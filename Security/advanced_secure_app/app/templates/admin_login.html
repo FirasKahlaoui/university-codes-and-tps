@@ -1,4 +1,5 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% block title %}Admin Login{% endblock %}
 {% block content %}
 <div class="card mx-auto mt-5" style="max-width: 400px;">
     <div class="card-body">
@@ -7,11 +8,13 @@
             {{ form.hidden_tag() }}
             <div class="mb-3">
                 {{ form.email.label(class="form-label") }}
-                {{ form.email(class="form-control", placeholder="Enter email") }}
+                {{ form.email(**{'class': 'form-control', 'placeholder': 'Enter email', 'aria-describedby': 'emailHelp'}) }}
+                <div id="emailHelp" class="form-text">Enter your email.</div>
             </div>
             <div class="mb-3">
                 {{ form.password.label(class="form-label") }}
-                {{ form.password(class="form-control", placeholder="Enter password") }}
+                {{ form.password(**{'class': 'form-control', 'placeholder': 'Enter password', 'aria-describedby': 'passwordHelp'}) }}
+                <div id="passwordHelp" class="form-text">Enter your password.</div>
             </div>
             <button type="submit" class="btn btn-primary w-100">Login</button>
         </form>

@@ -48,16 +48,31 @@ def dashboard():
 def admin_dashboard():
     form = AdminCreateUserForm()
     if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(username=form.username.data, email=form.email.data, password=hashed_password, is_admin=form.is_admin.data)
-        db.session.add(user)
-        db.session.commit()
-        log_action(current_user.id, f'Created user {user.username}')
-        flash('User created successfully!', 'success')
-        return redirect(url_for('main.admin_dashboard'))
+        # Check if email already exists
+        existing_user = User.query.filter_by(email=form.email.data).first(
+        ) or Admin.query.filter_by(email=form.email.data).first()
+        if existing_user:
+            flash('Email already exists. Please use a different email.', 'danger')
+        elif form.password.data != form.confirm_password.data:
+            flash('Passwords do not match. Please try again.', 'danger')
+        else:
+            hashed_password = bcrypt.generate_password_hash(
+                form.password.data).decode('utf-8')
+            if form.is_admin.data:
+                user = Admin(username=form.username.data,
+                             email=form.email.data, password=hashed_password)
+            else:
+                user = User(username=form.username.data,
+                            email=form.email.data, password=hashed_password)
+            db.session.add(user)
+            db.session.commit()
+            log_action(current_user.id, f'Created user {user.username}')
+            flash('User created successfully!', 'success')
+            return redirect(url_for('main.admin_dashboard'))
     users = User.query.all()
+    admins = Admin.query.all()
     logs = Log.query.all()
-    return render_template('admin_dashboard.html', form=form, users=users, logs=logs)
+    return render_template('admin_dashboard.html', form=form, users=users, admins=admins, logs=logs)
 
 
 @main.route("/logout")
