@@ -1,9 +1,12 @@
 from flask import Flask
 from app.extensions import db, bcrypt, login_manager
 from app.routes import main
+import logging
+from logging.handlers import RotatingFileHandler
+import os
+
 
 def create_app():
-    import os
     print("Current Working Directory:", os.getcwd())
     print("Template Folder Path:", os.path.join(os.getcwd(), 'templates'))
 
@@ -16,5 +19,18 @@ def create_app():
     login_manager.init_app(app)
 
     app.register_blueprint(main)
+
+    # Configure logging
+    if not os.path.exists('logs'):
+        os.mkdir('logs')
+    file_handler = RotatingFileHandler(
+        'logs/app.log', maxBytes=10240, backupCount=10)
+    file_handler.setFormatter(logging.Formatter(
+        '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
+    file_handler.setLevel(logging.INFO)
+    app.logger.addHandler(file_handler)
+
+    app.logger.setLevel(logging.INFO)
+    app.logger.info('Advanced Secure App startup')
 
     return app

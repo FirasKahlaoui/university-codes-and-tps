@@ -46,12 +46,17 @@ def dashboard():
 @login_required
 @nocache
 def admin_dashboard():
-    form = AdminCreateUserForm()  # Create an instance of the form
+    form = AdminCreateUserForm()
     if form.validate_on_submit():
-        # Handle form submission logic here
-        pass
-    users = User.query.all()  # Fetch all users
-    logs = Log.query.all()  # Fetch all logs
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user = User(username=form.username.data, email=form.email.data, password=hashed_password, is_admin=form.is_admin.data)
+        db.session.add(user)
+        db.session.commit()
+        log_action(current_user.id, f'Created user {user.username}')
+        flash('User created successfully!', 'success')
+        return redirect(url_for('main.admin_dashboard'))
+    users = User.query.all()
+    logs = Log.query.all()
     return render_template('admin_dashboard.html', form=form, users=users, logs=logs)
 
 
