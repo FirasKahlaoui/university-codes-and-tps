@@ -1,10 +1,11 @@
 # Security/advanced_secure_app/app/routes.py
-from flask import render_template, redirect, url_for, flash, Blueprint
+from flask import render_template, redirect, url_for, flash, Blueprint, session
 from flask_login import login_user, current_user, login_required, logout_user
 from app.extensions import db, bcrypt
 from app.forms import LoginForm, AdminCreateUserForm
 from app.models import User, Admin, Log
 from app.utils import log_action
+from app.decorators import nocache
 
 main = Blueprint('main', __name__)
 
@@ -14,7 +15,7 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         admin = Admin.query.filter_by(email=form.email.data).first()
-        
+
         if user:
             print(f"User found: {user.email}")
         if admin:
@@ -34,11 +35,13 @@ def login():
 
 @main.route("/dashboard")
 @login_required
+@nocache
 def dashboard():
     return render_template('dashboard.html')
 
 @main.route("/admin_dashboard", methods=['GET', 'POST'])
 @login_required
+@nocache
 def admin_dashboard():
     admin = Admin.query.filter_by(id=current_user.id).first()
     if not admin:
@@ -63,5 +66,5 @@ def admin_dashboard():
 @main.route("/logout")
 @login_required
 def logout():
-    logout_user()
+    session.clear()
     return redirect(url_for('main.login'))
