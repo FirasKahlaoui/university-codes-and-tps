@@ -1,6 +1,6 @@
 # Security/advanced_secure_app/app/routes.py
 from flask import render_template, redirect, url_for, flash, Blueprint
-from flask_login import login_user, current_user, login_required
+from flask_login import login_user, current_user, login_required, logout_user
 from app.extensions import db, bcrypt
 from app.forms import LoginForm, AdminCreateUserForm
 from app.models import User, Admin, Log
@@ -59,3 +59,9 @@ def admin_dashboard():
     users = User.query.all()
     logs = Log.query.all()
     return render_template('admin_dashboard.html', users=users, logs=logs, form=form)
+
+@main.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('main.login'))
