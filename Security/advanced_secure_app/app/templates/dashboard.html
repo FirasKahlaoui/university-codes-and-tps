@@ -1,4 +1,80 @@
 {% extends "base.html" %}
 {% block content %}
-    <h2>Welcome to your dashboard, {{ current_user.username }}!</h2>
+<h2>Welcome to your dashboard, {{ current_user.username }}!</h2>
+<div class="container">
+    <h1 class="text-center">Caesar Cipher</h1>
+    <form id="cipherForm">
+        <div class="mb-3">
+            <label for="message" class="form-label">Message</label>
+            <textarea class="form-control" id="message" rows="3" placeholder="Enter your message"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="key" class="form-label">Key</label>
+            <input type="number" class="form-control" id="key" placeholder="Enter the key">
+            <p id="keyError" class="error-message" style="display: none;">Please enter a valid key.</p>
+        </div>
+        <div class="d-grid gap-2">
+            <button type="button" class="btn btn-primary" onclick="encryptMessage()">Encrypt</button>
+            <button type="button" class="btn btn-secondary" onclick="decryptMessage()">Decrypt</button>
+            <button type="button" class="btn btn-warning" onclick="clearFields()">Clear Fields</button>
+        </div>
+    </form>
+    <div class="output-container">
+        <h2>Output</h2>
+        <p id="output" class="output-text"></p>
+        <button type="button" class="btn btn-success" onclick="copyToClipboard()">Copy to Clipboard</button>
+        <p id="copyNotification" class="copy-notification">Copied to clipboard!</p>
+    </div>
+</div>
+<script>
+    function encryptMessage() {
+        const message = document.getElementById('message').value;
+        const key = parseInt(document.getElementById('key').value);
+        const keyError = document.getElementById('keyError');
+        if (!isNaN(key)) {
+            keyError.style.display = 'none';
+            const encryptedMessage = caesarCipher(message, key, true);
+            document.getElementById('output').innerText = encryptedMessage;
+        } else {
+            keyError.style.display = 'block';
+        }
+    }
+
+    function decryptMessage() {
+        const message = document.getElementById('message').value;
+        const key = parseInt(document.getElementById('key').value);
+        const keyError = document.getElementById('keyError');
+        if (!isNaN(key)) {
+            keyError.style.display = 'none';
+            const decryptedMessage = caesarCipher(message, key, false);
+            document.getElementById('output').innerText = decryptedMessage;
+        } else {
+            keyError.style.display = 'block';
+        }
+    }
+
+    function clearFields() {
+        document.getElementById('message').value = '';
+        document.getElementById('key').value = '';
+        document.getElementById('output').innerText = '';
+        document.getElementById('keyError').style.display = 'none';
+    }
+
+    function copyToClipboard() {
+        const output = document.getElementById('output').innerText;
+        navigator.clipboard.writeText(output).then(() => {
+            document.getElementById('copyNotification').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('copyNotification').style.display = 'none';
+            }, 2000);
+        });
+    }
+
+    function caesarCipher(str, key, encrypt = true) {
+        const shift = encrypt ? key : -key;
+        return str.split('').map(char => {
+            return String.fromCharCode((char.charCodeAt(0) + shift) % 1114112);
+        }).join('');
+    }
+</script>
 {% endblock %}
