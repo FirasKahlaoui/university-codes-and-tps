@@ -3,32 +3,45 @@
 {% block title %}Caesar Cipher Dashboard{% endblock %}
 
 {% block content %}
-<div class="dashboard">
-    <!-- Part 1: Input -->
-    <div class="part">
-        <h2>Input Text & Shift Value</h2>
-        <label for="message">Enter Text:</label>
-        <textarea id="message" placeholder="Type your message... 😊"></textarea>
-
-        <label for="key">Shift Value:</label>
-        <input type="number" id="key" value="3">
-
-        <p id="keyError">Please enter a valid shift value.</p>
-
-        <div class="buttons-container">
-            <button onclick="encryptMessage()">Encrypt</button>
-            <button onclick="decryptMessage()">Decrypt</button>
-        </div>
-    </div>
-
-    <!-- Part 2: Output -->
-    <div class="part">
-        <h2>Output Result</h2>
-        <div id="output" class="output">Encrypted/Decrypted text will appear here...</div>
-
-        <div class="buttons-container">
-            <button onclick="copyOutput()">Copy Output</button>
-            <button onclick="clearFields()">Clear Fields</button>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="text-center">Caesar Cipher</h2>
+                </div>
+                <div class="card-body">
+                    <!-- Part 1: Input -->
+                    <div class="mb-3">
+                        <label for="message" class="form-label">Enter Text:</label>
+                        <textarea class="form-control" id="message" rows="3"
+                            placeholder="Type your message... 😊"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="key" class="form-label">Shift Value:</label>
+                        <input type="number" class="form-control" id="key" value="3">
+                        <div id="keyError" class="text-danger mt-2" style="display: none;">Please enter a valid shift
+                            value.</div>
+                    </div>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button class="btn btn-primary me-md-2" onclick="encryptMessage()">Encrypt</button>
+                        <button class="btn btn-secondary" onclick="decryptMessage()">Decrypt</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h2 class="text-center">Output Result</h2>
+                </div>
+                <div class="card-body">
+                    <div id="output" class="alert alert-secondary" role="alert">Encrypted/Decrypted text will appear
+                        here...</div>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button class="btn btn-success me-md-2" onclick="copyOutput()">Copy Output</button>
+                        <button class="btn btn-warning" onclick="clearFields()">Clear Fields</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
