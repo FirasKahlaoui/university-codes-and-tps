@@ -44,7 +44,6 @@
 
         .navbar-nav {
             margin-left: auto;
-            /* Aligns the nav items to the right */
         }
     </style>
 </head>
@@ -91,18 +90,18 @@
                 <div class="card login-card">
                     <div class="card-body">
                         <h2 class="card-title text-center">User Login 🔐</h2>
-                        <form method="POST" id="userLoginForm" onsubmit="return validateForm()">
+                        <form method="POST" action="{{ url_for('main.login') }}" id="userLoginForm"
+                            onsubmit="return validateForm()">
+                            {{ form.hidden_tag() }}
                             <div class="form-group">
                                 <label for="email">Email</label>
-                                <input type="email" class="form-control" id="email" name="email"
-                                    placeholder="Enter email" required>
+                                {{ form.email(class="form-control", placeholder="Enter email", required=True) }}
                                 <div class="invalid-feedback">Please enter a valid email address.</div>
                                 <small id="emailHelp" class="form-text text-muted">Enter your email.</small>
                             </div>
                             <div class="form-group">
                                 <label for="password">Password</label>
-                                <input type="password" class="form-control" id="password" name="password"
-                                    placeholder="Enter password" required>
+                                {{ form.password(class="form-control", placeholder="Enter password", required=True) }}
                                 <div class="invalid-feedback">Please enter your password.</div>
                                 <small id="passwordHelp" class="form-text text-muted">Enter your password.</small>
                             </div>

@@ -91,7 +91,8 @@
                 <div class="card login-card">
                     <div class="card-body">
                         <h2 class="card-title text-center">Admin Login 🔐</h2>
-                        <form method="POST" id="adminLoginForm" onsubmit="return validateForm()">
+                        <form method="POST" action="{{ url_for('main.admin_login') }}" id="adminLoginForm">
+                            {{ form.hidden_tag() }}
                             <div class="form-group">
                                 <label for="email">Email</label>
                                 <input type="email" class="form-control" id="email" name="email"
