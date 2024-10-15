@@ -9,10 +9,36 @@
     <style>
         body {
             background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+
+        nav {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .navbar-brand:hover {
+            color: #0056b3;
+        }
+
+        .navbar-light .navbar-nav .nav-link {
+            color: #495057;
+        }
+
+        .navbar-light .navbar-nav .nav-link:hover {
+            color: #007bff;
+        }
+
+        .navbar-nav {
+            margin-left: auto;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 900px;
             margin-top: 50px;
         }
 
@@ -23,53 +49,87 @@
 
         .card {
             margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .sidebar {
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 100;
-            padding: 48px 0;
-            background-color: #343a40;
+        .card-title {
+            font-weight: bold;
+            font-size: 1.5rem;
         }
 
-        .sidebar a {
-            color: #ffffff;
-            text-decoration: none;
-            padding: 10px 15px;
-            display: block;
+        .btn-danger {
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        .sidebar a:hover {
-            background-color: #495057;
+        .btn-danger:hover {
+            background-color: #c82333;
+            color: white;
         }
 
-        .main-content {
-            margin-left: 220px;
+        .log-item {
+            border-left: 4px solid #007bff;
+            padding-left: 15px;
+            margin-bottom: 10px;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+        }
+
+        .log-timestamp {
+            font-weight: bold;
+        }
+
+        .no-data {
+            text-align: center;
+            font-style: italic;
         }
     </style>
 </head>
 
 <body>
 
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <h3 class="text-center text-white">Admin Panel</h3>
-        <a href="#create-user">Create User</a>
-        <a href="#users-list">Users</a>
-        <a href="#admins-list">Admins</a>
-        <a href="#logs-list">Logs</a>
-    </div>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light py-3">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-shield-alt"></i> Secure Cipher
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.logout') }}">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('main.login') }}">
+                            <i class="fas fa-user-lock"></i> User Login
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.admin_login') }}">
+                            <i class="fas fa-user-shield"></i> Admin Login
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-    <div class="container main-content">
+    <div class="container">
         <!-- Dashboard Header -->
         <h2 class="text-center mb-4">Admin Dashboard</h2>
 
         <div class="row">
             <!-- Create User Form -->
-            <div class="col-md-4" id="create-user">
+            <div class="col-md-4">
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h3 class="card-title text-center mb-4">Create New User</h3>
@@ -104,7 +164,7 @@
             </div>
 
             <!-- Users List -->
-            <div class="col-md-4" id="users-list">
+            <div class="col-md-4">
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h3 class="card-title mb-4">Users</h3>
@@ -117,7 +177,7 @@
                             </li>
                             {% endfor %}
                             {% else %}
-                            <li class="list-group-item">No users found.</li>
+                            <li class="list-group-item no-data">No users found.</li>
                             {% endif %}
                         </ul>
                     </div>
@@ -125,7 +185,7 @@
             </div>
 
             <!-- Admins List -->
-            <div class="col-md-4" id="admins-list">
+            <div class="col-md-4">
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h3 class="card-title mb-4">Admins</h3>
@@ -138,7 +198,7 @@
                             </li>
                             {% endfor %}
                             {% else %}
-                            <li class="list-group-item">No admins found.</li>
+                            <li class="list-group-item no-data">No admins found.</li>
                             {% endif %}
                         </ul>
                     </div>
@@ -147,18 +207,18 @@
         </div>
 
         <!-- Logs List -->
-        <div class="card shadow-sm mb-5" id="logs-list">
+        <div class="card shadow-sm mb-5">
             <div class="card-body">
                 <h3 class="card-title mb-4">Logs</h3>
                 <ul class="list-group">
                     {% if logs %}
-                    {% for log in logs[:5] %} <!-- Only display the first 5 logs -->
-                    <li class="list-group-item">
-                        <span><strong>{{ log.timestamp }}</strong> - {{ log.action }}</span>
+                    {% for log in logs[:5] %} <!-- Show only the first 5 logs -->
+                    <li class="log-item">
+                        <span class="log-timestamp">{{ log.timestamp }}</span> - {{ log.action }}
                     </li>
                     {% endfor %}
                     {% else %}
-                    <li class="list-group-item">No logs available.</li>
+                    <li class="list-group-item no-data">No logs available.</li>
                     {% endif %}
                 </ul>
             </div>
