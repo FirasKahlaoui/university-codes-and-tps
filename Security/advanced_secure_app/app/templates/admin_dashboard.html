@@ -12,7 +12,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             margin-top: 50px;
         }
 
@@ -24,18 +24,52 @@
         .card {
             margin-bottom: 30px;
         }
+
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            padding: 48px 0;
+            background-color: #343a40;
+        }
+
+        .sidebar a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: block;
+        }
+
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+
+        .main-content {
+            margin-left: 220px;
+        }
     </style>
 </head>
 
 <body>
 
-    <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h3 class="text-center text-white">Admin Panel</h3>
+        <a href="#create-user">Create User</a>
+        <a href="#users-list">Users</a>
+        <a href="#admins-list">Admins</a>
+        <a href="#logs-list">Logs</a>
+    </div>
+
+    <div class="container main-content">
         <!-- Dashboard Header -->
         <h2 class="text-center mb-4">Admin Dashboard</h2>
 
         <div class="row">
             <!-- Create User Form -->
-            <div class="col-md-4">
+            <div class="col-md-4" id="create-user">
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h3 class="card-title text-center mb-4">Create New User</h3>
@@ -70,7 +104,7 @@
             </div>
 
             <!-- Users List -->
-            <div class="col-md-4">
+            <div class="col-md-4" id="users-list">
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h3 class="card-title mb-4">Users</h3>
@@ -91,7 +125,7 @@
             </div>
 
             <!-- Admins List -->
-            <div class="col-md-4">
+            <div class="col-md-4" id="admins-list">
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h3 class="card-title mb-4">Admins</h3>
@@ -113,12 +147,12 @@
         </div>
 
         <!-- Logs List -->
-        <div class="card shadow-sm mb-5">
+        <div class="card shadow-sm mb-5" id="logs-list">
             <div class="card-body">
                 <h3 class="card-title mb-4">Logs</h3>
                 <ul class="list-group">
                     {% if logs %}
-                    {% for log in logs %}
+                    {% for log in logs[:5] %} <!-- Only display the first 5 logs -->
                     <li class="list-group-item">
                         <span><strong>{{ log.timestamp }}</strong> - {{ log.action }}</span>
                     </li>
