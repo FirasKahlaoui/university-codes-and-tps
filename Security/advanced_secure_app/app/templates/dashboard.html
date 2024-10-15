@@ -1,240 +1,102 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Caesar Cipher Dashboard</title>
-    <style>
-        /* Basic Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+{% block title %}Caesar Cipher Dashboard{% endblock %}
 
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #74ebd5, #acb6e5);
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+{% block content %}
+<div class="dashboard">
+    <!-- Part 1: Input -->
+    <div class="part">
+        <h2>Input Text & Shift Value</h2>
+        <label for="message">Enter Text:</label>
+        <textarea id="message" placeholder="Type your message... 😊"></textarea>
 
-        .dashboard {
-            display: flex;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            max-width: 900px;
-            width: 100%;
-            animation: fadeIn 1s ease;
-        }
+        <label for="key">Shift Value:</label>
+        <input type="number" id="key" value="3">
 
-        .dashboard .part {
-            flex: 1;
-            padding: 20px;
-            border-right: 2px solid #ecf0f1;
-        }
+        <p id="keyError">Please enter a valid shift value.</p>
 
-        .dashboard .part:last-child {
-            border-right: none;
-        }
-
-        h2 {
-            font-size: 22px;
-            color: #2c3e50;
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            margin: 10px 0;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        input,
-        textarea {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border-radius: 10px;
-            border: 1px solid #ccc;
-            font-size: 16px;
-        }
-
-        textarea {
-            height: 120px;
-            resize: none;
-        }
-
-        button {
-            width: 45%;
-            padding: 10px;
-            margin-top: 20px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #2980b9;
-        }
-
-        button:focus {
-            outline: none;
-        }
-
-        .output {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #ecf0f1;
-            border-radius: 10px;
-            border: 1px solid #ddd;
-            min-height: 120px;
-            font-size: 16px;
-            transition: background-color 0.5s ease;
-        }
-
-        .output:hover {
-            background-color: #dcdde1;
-        }
-
-        #keyError {
-            color: red;
-            margin-top: 10px;
-            display: none;
-        }
-
-        .buttons-container {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .buttons-container button {
-            width: 48%;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-    <div class="dashboard">
-        <!-- Part 1: Input -->
-        <div class="part">
-            <h2>Input Text & Shift Value</h2>
-            <label for="message">Enter Text:</label>
-            <textarea id="message" placeholder="Type your message... 😊"></textarea>
-
-            <label for="key">Shift Value:</label>
-            <input type="number" id="key" value="3">
-
-            <p id="keyError">Please enter a valid shift value.</p>
-
-            <div class="buttons-container">
-                <button onclick="encryptMessage()">Encrypt</button>
-                <button onclick="decryptMessage()">Decrypt</button>
-            </div>
-        </div>
-
-        <!-- Part 2: Output -->
-        <div class="part">
-            <h2>Output Result</h2>
-            <div id="output" class="output">Encrypted/Decrypted text will appear here...</div>
-
-            <div class="buttons-container">
-                <button onclick="copyOutput()">Copy Output</button>
-                <button onclick="clearFields()">Clear Fields</button>
-            </div>
+        <div class="buttons-container">
+            <button onclick="encryptMessage()">Encrypt</button>
+            <button onclick="decryptMessage()">Decrypt</button>
         </div>
     </div>
 
-    <script>
-        // Caesar Cipher encryption/decryption for letters, numbers, symbols, and emojis
-        function caesarCipher(str, shift, encrypt = true) {
-            if (!encrypt) shift = -shift; // Inverse the shift for decryption
+    <!-- Part 2: Output -->
+    <div class="part">
+        <h2>Output Result</h2>
+        <div id="output" class="output">Encrypted/Decrypted text will appear here...</div>
 
-            return Array.from(str).map(char => {
-                const code = char.charCodeAt();
-                if (code >= 32 && code <= 126) {
-                    return String.fromCharCode(((code - 32 + shift) % 95 + 95) % 95 + 32);
-                } else {
-                    return char; // Non-printable or emoji characters remain unchanged
-                }
-            }).join('');
-        }
+        <div class="buttons-container">
+            <button onclick="copyOutput()">Copy Output</button>
+            <button onclick="clearFields()">Clear Fields</button>
+        </div>
+    </div>
+</div>
 
-        // Encrypt message
-        function encryptMessage() {
-            const message = document.getElementById('message').value;
-            const key = parseInt(document.getElementById('key').value);
-            const keyError = document.getElementById('keyError');
-            if (!isNaN(key)) {
-                keyError.style.display = 'none';
-                const encryptedMessage = caesarCipher(message, key, true);
-                document.getElementById('output').innerText = encryptedMessage;
+<script>
+    function caesarCipher(str, shift, encrypt = true) {
+        if (!encrypt) shift = -shift; // Inverse the shift for decryption
+
+        return Array.from(str).map(char => {
+            const code = char.charCodeAt();
+            if (code >= 32 && code <= 126) {
+                return String.fromCharCode(((code - 32 + shift) % 95 + 95) % 95 + 32);
             } else {
-                keyError.style.display = 'block';
+                return char;
             }
+        }).join('');
+    }
+
+    // Encrypt message
+    function encryptMessage() {
+        const message = document.getElementById('message').value;
+        const key = parseInt(document.getElementById('key').value);
+        const keyError = document.getElementById('keyError');
+        if (!isNaN(key)) {
+            keyError.style.display = 'none';
+            const encryptedMessage = caesarCipher(message, key, true);
+            document.getElementById('output').innerText = encryptedMessage;
+        } else {
+            keyError.style.display = 'block';
         }
+    }
 
-        // Decrypt message
-        function decryptMessage() {
-            const message = document.getElementById('message').value;
-            const key = parseInt(document.getElementById('key').value);
-            const keyError = document.getElementById('keyError');
-            if (!isNaN(key)) {
-                keyError.style.display = 'none';
-                const decryptedMessage = caesarCipher(message, key, false);
-                document.getElementById('output').innerText = decryptedMessage;
-            } else {
-                keyError.style.display = 'block';
-            }
+    // Decrypt message
+    function decryptMessage() {
+        const message = document.getElementById('message').value;
+        const key = parseInt(document.getElementById('key').value);
+        const keyError = document.getElementById('keyError');
+        if (!isNaN(key)) {
+            keyError.style.display = 'none';
+            const decryptedMessage = caesarCipher(message, key, false);
+            document.getElementById('output').innerText = decryptedMessage;
+        } else {
+            keyError.style.display = 'block';
         }
+    }
 
-        // Copy output text to clipboard
-        function copyOutput() {
-            const outputText = document.getElementById('output').innerText;
-            if (outputText) {
-                const tempInput = document.createElement('textarea');
-                tempInput.value = outputText;
-                document.body.appendChild(tempInput);
-                tempInput.select();
-                document.execCommand('copy');
-                document.body.removeChild(tempInput);
-                alert("Output copied to clipboard!");
-            } else {
-                alert("No output to copy!");
-            }
+    // Copy output text to clipboard
+    function copyOutput() {
+        const outputText = document.getElementById('output').innerText;
+        if (outputText) {
+            const tempInput = document.createElement('textarea');
+            tempInput.value = outputText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            alert("Output copied to clipboard!");
+        } else {
+            alert("No output to copy!");
         }
+    }
 
-        // Clear fields function
-        function clearFields() {
-            document.getElementById('message').value = '';
-            document.getElementById('key').value = 3;
-            document.getElementById('output').innerText = 'Encrypted/Decrypted text will appear here...';
-            document.getElementById('keyError').style.display = 'none';
-        }
-    </script>
-
-</body>
-
-</html>
+    // Clear fields function
+    function clearFields() {
+        document.getElementById('message').value = '';
+        document.getElementById('key').value = 3;
+        document.getElementById('output').innerText = 'Encrypted/Decrypted text will appear here...';
+        document.getElementById('keyError').style.display = 'none';
+    }
+</script>
+{% endblock %}
