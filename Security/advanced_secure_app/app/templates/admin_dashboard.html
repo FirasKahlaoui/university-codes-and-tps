@@ -7,73 +7,82 @@
     <!-- Dashboard Header -->
     <h2 class="text-center mb-4" style="font-weight: bold; font-size: 2rem;">Admin Dashboard</h2>
 
-    <!-- Create User Form -->
-    <div class="card shadow-sm mb-5">
-        <div class="card-body">
-            <h3 class="card-title text-center mb-4">Create New User</h3>
-            <form method="POST">
-                {{ form.hidden_tag() }}
-                <div class="mb-3">
-                    {{ form.username.label(class="form-label", style="font-size: 1.1rem;") }}
-                    {{ form.username(class="form-control form-control-lg", placeholder="Enter username") }}
+    <div class="row">
+        <!-- Create User Form -->
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-5">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4">Create New User</h3>
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            {{ form.username.label(class="form-label", style="font-size: 1.1rem;") }}
+                            {{ form.username(class="form-control form-control-lg", placeholder="Enter username") }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.email.label(class="form-label", style="font-size: 1.1rem;") }}
+                            {{ form.email(class="form-control form-control-lg", placeholder="Enter email") }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.password.label(class="form-label", style="font-size: 1.1rem;") }}
+                            {{ form.password(class="form-control form-control-lg", placeholder="Enter password") }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.confirm_password.label(class="form-label", style="font-size: 1.1rem;") }}
+                            {{ form.confirm_password(class="form-control form-control-lg", placeholder="Confirm
+                            password") }}
+                        </div>
+                        <div class="mb-3 form-check">
+                            {{ form.is_admin(class="form-check-input") }}
+                            {{ form.is_admin.label(class="form-check-label", style="font-size: 1.1rem;") }}
+                        </div>
+                        <button type="submit" class="btn btn-success w-100"
+                            style="padding: 0.75rem; font-size: 1.1rem;">Create User</button>
+                    </form>
                 </div>
-                <div class="mb-3">
-                    {{ form.email.label(class="form-label", style="font-size: 1.1rem;") }}
-                    {{ form.email(class="form-control form-control-lg", placeholder="Enter email") }}
-                </div>
-                <div class="mb-3">
-                    {{ form.password.label(class="form-label", style="font-size: 1.1rem;") }}
-                    {{ form.password(class="form-control form-control-lg", placeholder="Enter password") }}
-                </div>
-                <div class="mb-3">
-                    {{ form.confirm_password.label(class="form-label", style="font-size: 1.1rem;") }}
-                    {{ form.confirm_password(class="form-control form-control-lg", placeholder="Confirm password") }}
-                </div>
-                <div class="mb-3 form-check">
-                    {{ form.is_admin(class="form-check-input") }}
-                    {{ form.is_admin.label(class="form-check-label", style="font-size: 1.1rem;") }}
-                </div>
-                <button type="submit" class="btn btn-success w-100" style="padding: 0.75rem; font-size: 1.1rem;">Create
-                    User</button>
-            </form>
+            </div>
         </div>
-    </div>
 
-    <!-- Users List -->
-    <div class="card shadow-sm mb-5">
-        <div class="card-body">
-            <h3 class="card-title mb-4">Users</h3>
-            <ul class="list-group">
-                {% if users %}
-                {% for user in users %}
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>{{ user.username }} ({{ user.email }})</span>
-                    <button class="btn btn-sm btn-outline-danger">Delete</button>
-                </li>
-                {% endfor %}
-                {% else %}
-                <li class="list-group-item">No users found.</li>
-                {% endif %}
-            </ul>
+        <!-- Users List -->
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-5">
+                <div class="card-body">
+                    <h3 class="card-title mb-4">Users</h3>
+                    <ul class="list-group">
+                        {% if users %}
+                        {% for user in users %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>{{ user.username }} ({{ user.email }})</span>
+                            <button class="btn btn-sm btn-outline-danger">Delete</button>
+                        </li>
+                        {% endfor %}
+                        {% else %}
+                        <li class="list-group-item">No users found.</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <!-- Admins List -->
-    <div class="card shadow-sm mb-5">
-        <div class="card-body">
-            <h3 class="card-title mb-4">Admins</h3>
-            <ul class="list-group">
-                {% if admins %}
-                {% for admin in admins %}
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>{{ admin.username }} ({{ admin.email }})</span>
-                    <button class="btn btn-sm btn-outline-danger">Delete</button>
-                </li>
-                {% endfor %}
-                {% else %}
-                <li class="list-group-item">No admins found.</li>
-                {% endif %}
-            </ul>
+        <!-- Admins List -->
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-5">
+                <div class="card-body">
+                    <h3 class="card-title mb-4">Admins</h3>
+                    <ul class="list-group">
+                        {% if admins %}
+                        {% for admin in admins %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>{{ admin.username }} ({{ admin.email }})</span>
+                            <button class="btn btn-sm btn-outline-danger">Delete</button>
+                        </li>
+                        {% endfor %}
+                        {% else %}
+                        <li class="list-group-item">No admins found.</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
