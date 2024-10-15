@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
+
 {% block title %}Admin Dashboard{% endblock %}
+
 {% block content %}
 <div class="container mt-5">
     <h2 class="text-center">Admin Dashboard</h2>
@@ -29,23 +31,23 @@
     </form>
     <hr>
     <h3>Users</h3>
-    <ul>
+    <ul class="list-group">
         {% for user in users %}
-        <li>{{ user.username }} ({{ user.email }})</li>
+        <li class="list-group-item">{{ user.username }} ({{ user.email }})</li>
         {% endfor %}
     </ul>
     <hr>
     <h3>Admins</h3>
-    <ul>
+    <ul class="list-group">
         {% for admin in admins %}
-        <li>{{ admin.username }} ({{ admin.email }})</li>
+        <li class="list-group-item">{{ admin.username }} ({{ admin.email }})</li>
         {% endfor %}
     </ul>
     <hr>
     <h3>Logs</h3>
-    <ul>
+    <ul class="list-group">
         {% for log in logs %}
-        <li>{{ log.timestamp }} - {{ log.action }}</li>
+        <li class="list-group-item">{{ log.timestamp }} - {{ log.action }}</li>
         {% endfor %}
     </ul>
 </div>
