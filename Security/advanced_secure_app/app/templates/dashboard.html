@@ -1,80 +1,140 @@
-{% extends "base.html" %}
-{% block content %}
-<h2>Welcome to your dashboard, {{ current_user.username }}!</h2>
-<div class="container">
-    <h1 class="text-center">Caesar Cipher</h1>
-    <form id="cipherForm">
-        <div class="mb-3">
-            <label for="message" class="form-label">Message</label>
-            <textarea class="form-control" id="message" rows="3" placeholder="Enter your message"></textarea>
-        </div>
-        <div class="mb-3">
-            <label for="key" class="form-label">Key</label>
-            <input type="number" class="form-control" id="key" placeholder="Enter the key">
-            <p id="keyError" class="error-message" style="display: none;">Please enter a valid key.</p>
-        </div>
-        <div class="d-grid gap-2">
-            <button type="button" class="btn btn-primary" onclick="encryptMessage()">Encrypt</button>
-            <button type="button" class="btn btn-secondary" onclick="decryptMessage()">Decrypt</button>
-            <button type="button" class="btn btn-warning" onclick="clearFields()">Clear Fields</button>
-        </div>
-    </form>
-    <div class="output-container">
-        <h2>Output</h2>
-        <p id="output" class="output-text"></p>
-        <button type="button" class="btn btn-success" onclick="copyToClipboard()">Copy to Clipboard</button>
-        <p id="copyNotification" class="copy-notification">Copied to clipboard!</p>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caesar Cipher Dashboard</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f5f7fa;
+            color: #333;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #2c3e50;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        textarea {
+            height: 100px;
+            resize: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .output {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Caesar Cipher Encryption/Decryption</h1>
+        <label for="text">Enter Text:</label>
+        <textarea id="text" placeholder="Type your message here..."></textarea>
+
+        <label for="shift">Shift Value:</label>
+        <input type="number" id="shift" value="3">
+
+        <button onclick="encrypt()">Encrypt</button>
+        <button onclick="decrypt()">Decrypt</button>
+
+        <div id="result" class="output"></div>
     </div>
-</div>
-<script>
-    function encryptMessage() {
-        const message = document.getElementById('message').value;
-        const key = parseInt(document.getElementById('key').value);
-        const keyError = document.getElementById('keyError');
-        if (!isNaN(key)) {
-            keyError.style.display = 'none';
-            const encryptedMessage = caesarCipher(message, key, true);
-            document.getElementById('output').innerText = encryptedMessage;
-        } else {
-            keyError.style.display = 'block';
+
+    <script>
+        // Caesar Cipher encryption
+        function caesarCipher(str, shift, encrypt = true) {
+            if (!encrypt) shift = -shift; // Inverse the shift for decryption
+            return str.split('').map(char => {
+                const code = char.charCodeAt();
+                if (code >= 65 && code <= 90) { // Uppercase A-Z
+                    return String.fromCharCode(((code - 65 + shift) % 26 + 26) % 26 + 65);
+                } else if (code >= 97 && code <= 122) { // Lowercase a-z
+                    return String.fromCharCode(((code - 97 + shift) % 26 + 26) % 26 + 97);
+                } else {
+                    return char; // Non-alphabetical characters remain unchanged
+                }
+            }).join('');
         }
-    }
 
-    function decryptMessage() {
-        const message = document.getElementById('message').value;
-        const key = parseInt(document.getElementById('key').value);
-        const keyError = document.getElementById('keyError');
-        if (!isNaN(key)) {
-            keyError.style.display = 'none';
-            const decryptedMessage = caesarCipher(message, key, false);
-            document.getElementById('output').innerText = decryptedMessage;
-        } else {
-            keyError.style.display = 'block';
+        // Encryption handler
+        function encrypt() {
+            const text = document.getElementById("text").value;
+            const shift = parseInt(document.getElementById("shift").value);
+            const result = caesarCipher(text, shift, true);
+            document.getElementById("result").innerText = `Encrypted: ${result}`;
         }
-    }
 
-    function clearFields() {
-        document.getElementById('message').value = '';
-        document.getElementById('key').value = '';
-        document.getElementById('output').innerText = '';
-        document.getElementById('keyError').style.display = 'none';
-    }
+        // Decryption handler
+        function decrypt() {
+            const text = document.getElementById("text").value;
+            const shift = parseInt(document.getElementById("shift").value);
+            const result = caesarCipher(text, shift, false);
+            document.getElementById("result").innerText = `Decrypted: ${result}`;
+        }
+    </script>
+</body>
 
-    function copyToClipboard() {
-        const output = document.getElementById('output').innerText;
-        navigator.clipboard.writeText(output).then(() => {
-            document.getElementById('copyNotification').style.display = 'block';
-            setTimeout(() => {
-                document.getElementById('copyNotification').style.display = 'none';
-            }, 2000);
-        });
-    }
-
-    function caesarCipher(str, key, encrypt = true) {
-        const shift = encrypt ? key : -key;
-        return str.split('').map(char => {
-            return String.fromCharCode((char.charCodeAt(0) + shift) % 1114112);
-        }).join('');
-    }
-</script>
-{% endblock %}
+</html>
