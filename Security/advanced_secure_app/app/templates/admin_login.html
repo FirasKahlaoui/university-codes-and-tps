@@ -1,23 +1,146 @@
-{% extends 'base.html' %}
-{% block title %}Admin Login{% endblock %}
-{% block content %}
-<div class="card mx-auto mt-5" style="max-width: 400px;">
-    <div class="card-body">
-        <h2 class="card-title text-center">Admin Login</h2>
-        <form method="POST">
-            {{ form.hidden_tag() }}
-            <div class="mb-3">
-                {{ form.email.label(class="form-label") }}
-                {{ form.email(**{'class': 'form-control', 'placeholder': 'Enter email', 'aria-describedby': 'emailHelp'}) }}
-                <div id="emailHelp" class="form-text">Enter your email.</div>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .login-container {
+            margin-top: 100px;
+        }
+
+        .login-card {
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        nav {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .navbar-brand:hover {
+            color: #0056b3;
+        }
+
+        .navbar-light .navbar-nav .nav-link {
+            color: #495057;
+        }
+
+        .navbar-light .navbar-nav .nav-link:hover {
+            color: #007bff;
+        }
+
+        .navbar-nav {
+            margin-left: auto;
+            /* Aligns the nav items to the right */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light py-3">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-shield-alt"></i> Secure Cipher
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.logout') }}">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.login') }}">
+                            <i class="fas fa-user-lock"></i> User Login
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('main.admin_login') }}">
+                            <i class="fas fa-user-shield"></i> Admin Login
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
             </div>
-            <div class="mb-3">
-                {{ form.password.label(class="form-label") }}
-                {{ form.password(**{'class': 'form-control', 'placeholder': 'Enter password', 'aria-describedby': 'passwordHelp'}) }}
-                <div id="passwordHelp" class="form-text">Enter your password.</div>
+        </div>
+    </nav>
+
+    <div class="container login-container">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <div class="card login-card">
+                    <div class="card-body">
+                        <h2 class="card-title text-center">Admin Login 🔐</h2>
+                        <form method="POST" id="adminLoginForm" onsubmit="return validateForm()">
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                    placeholder="Enter email" required>
+                                <div class="invalid-feedback">Please enter a valid email address.</div>
+                                <small id="emailHelp" class="form-text text-muted">Enter your email.</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" class="form-control" id="password" name="password"
+                                    placeholder="Enter password" required>
+                                <div class="invalid-feedback">Please enter your password.</div>
+                                <small id="passwordHelp" class="form-text text-muted">Enter your password.</small>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Login</button>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary w-100">Login</button>
-        </form>
+        </div>
     </div>
-</div>
-{% endblock %}
+
+    <script>
+        function validateForm() {
+            const email = document.getElementById('email');
+            const password = document.getElementById('password');
+
+            // Simple validation for empty fields
+            if (!email.value.trim()) {
+                email.classList.add('is-invalid');
+                return false;
+            } else {
+                email.classList.remove('is-invalid');
+            }
+
+            if (!password.value.trim()) {
+                password.classList.add('is-invalid');
+                return false;
+            } else {
+                password.classList.remove('is-invalid');
+            }
+
+            return true;
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
