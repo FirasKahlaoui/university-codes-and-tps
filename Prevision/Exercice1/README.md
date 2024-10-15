@@ -24,7 +24,7 @@ Ce projet effectue une analyse de régression linéaire entre les variables \(X\
 
 ## Résultats
 
-Le modèle de régression prédit une valeur de \(Y\) pour \(X = 40\).
+Le modèle de régression prédit une valeur de \(Y\) pour \(X = x\).
 
 ## Conclusion
 
