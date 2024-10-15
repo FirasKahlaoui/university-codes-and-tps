@@ -1,21 +1,24 @@
 {% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
 {% block content %}
-<div class="card mx-auto mt-5 shadow" style="max-width: 400px; border-radius: 12px;">
-    <div class="card-body p-4">
-        <h2 class="card-title text-center mb-4">
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="w-100" style="max-width: 400px;">
+        <h2 class="text-center mb-4" style="font-size: 2rem;">
             <i class="fas fa-user-lock"></i> Login
         </h2>
-        <form method="POST">
+        <form method="POST" class="p-4 shadow-lg rounded bg-white">
             {{ form.hidden_tag() }}
             <div class="mb-3">
-                {{ form.email.label(class="form-label") }}
-                {{ form.email(class="form-control", placeholder="Enter email") }}
+                {{ form.email.label(class="form-label", style="font-size: 1.2rem;") }}
+                {{ form.email(class="form-control form-control-lg", placeholder="Enter email") }}
             </div>
             <div class="mb-3">
-                {{ form.password.label(class="form-label") }}
-                {{ form.password(class="form-control", placeholder="Enter password") }}
+                {{ form.password.label(class="form-label", style="font-size: 1.2rem;") }}
+                {{ form.password(class="form-control form-control-lg", placeholder="Enter password") }}
             </div>
-            <button type="submit" class="btn btn-primary w-100 mt-3">
+            <button type="submit" class="btn btn-primary w-100 mt-3" style="font-size: 1.1rem; padding: 0.75rem;">
                 <i class="fas fa-sign-in-alt"></i> Login
             </button>
         </form>

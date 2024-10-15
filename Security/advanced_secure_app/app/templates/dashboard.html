@@ -6,16 +6,17 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-6 offset-md-3">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="text-center">Caesar Cipher</h2>
+            <div class="card shadow-lg">
+                <div class="card-header text-center bg-primary text-white">
+                    <h2 class="display-6">Caesar Cipher</h2>
                 </div>
                 <div class="card-body">
                     <!-- Part 1: Input -->
                     <div class="mb-3">
                         <label for="message" class="form-label">Enter Text:</label>
-                        <textarea class="form-control" id="message" rows="3"
-                            placeholder="Type your message... 😊"></textarea>
+                        <textarea class="form-control" id="message" rows="3" placeholder="Type your message... 😊"
+                            maxlength="250"></textarea>
+                        <small id="charCount" class="form-text text-muted">Max 250 characters</small>
                     </div>
                     <div class="mb-3">
                         <label for="key" class="form-label">Shift Value:</label>
@@ -24,18 +25,25 @@
                             value.</div>
                     </div>
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <button class="btn btn-primary me-md-2" onclick="encryptMessage()">Encrypt</button>
-                        <button class="btn btn-secondary" onclick="decryptMessage()">Decrypt</button>
+                        <button class="btn btn-primary me-md-2" onclick="encryptMessage()">
+                            Encrypt <span id="encryptSpinner" class="spinner-border spinner-border-sm" role="status"
+                                aria-hidden="true" style="display: none;"></span>
+                        </button>
+                        <button class="btn btn-secondary" onclick="decryptMessage()">
+                            Decrypt <span id="decryptSpinner" class="spinner-border spinner-border-sm" role="status"
+                                aria-hidden="true" style="display: none;"></span>
+                        </button>
                     </div>
                 </div>
             </div>
-            <div class="card mt-4">
-                <div class="card-header">
-                    <h2 class="text-center">Output Result</h2>
+            <div class="card mt-4 shadow">
+                <div class="card-header text-center bg-secondary text-white">
+                    <h2 class="display-6">Output Result</h2>
                 </div>
                 <div class="card-body">
-                    <div id="output" class="alert alert-secondary" role="alert">Encrypted/Decrypted text will appear
-                        here...</div>
+                    <div id="output" class="alert alert-secondary text-break" role="alert">
+                        Encrypted/Decrypted text will appear here...
+                    </div>
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                         <button class="btn btn-success me-md-2" onclick="copyOutput()">Copy Output</button>
                         <button class="btn btn-warning" onclick="clearFields()">Clear Fields</button>
@@ -47,6 +55,11 @@
 </div>
 
 <script>
+    document.getElementById('message').addEventListener('input', function () {
+        const charCount = document.getElementById('charCount');
+        charCount.innerText = `${this.value.length}/250 characters`;
+    });
+
     function caesarCipher(str, shift, encrypt = true) {
         if (!encrypt) shift = -shift; // Inverse the shift for decryption
 
@@ -60,38 +73,56 @@
         }).join('');
     }
 
+    // Show a loading spinner
+    function showSpinner(id) {
+        document.getElementById(id).style.display = 'inline-block';
+    }
+
+    // Hide a loading spinner
+    function hideSpinner(id) {
+        document.getElementById(id).style.display = 'none';
+    }
+
     // Encrypt message
     function encryptMessage() {
-        const message = document.getElementById('message').value;
-        const key = parseInt(document.getElementById('key').value);
-        const keyError = document.getElementById('keyError');
-        if (!isNaN(key)) {
-            keyError.style.display = 'none';
-            const encryptedMessage = caesarCipher(message, key, true);
-            document.getElementById('output').innerText = encryptedMessage;
-        } else {
-            keyError.style.display = 'block';
-        }
+        showSpinner('encryptSpinner');
+        setTimeout(() => {
+            const message = document.getElementById('message').value;
+            const key = parseInt(document.getElementById('key').value);
+            const keyError = document.getElementById('keyError');
+            if (!isNaN(key)) {
+                keyError.style.display = 'none';
+                const encryptedMessage = caesarCipher(message, key, true);
+                document.getElementById('output').innerText = encryptedMessage;
+            } else {
+                keyError.style.display = 'block';
+            }
+            hideSpinner('encryptSpinner');
+        }, 500); // Simulate encryption delay
     }
 
     // Decrypt message
     function decryptMessage() {
-        const message = document.getElementById('message').value;
-        const key = parseInt(document.getElementById('key').value);
-        const keyError = document.getElementById('keyError');
-        if (!isNaN(key)) {
-            keyError.style.display = 'none';
-            const decryptedMessage = caesarCipher(message, key, false);
-            document.getElementById('output').innerText = decryptedMessage;
-        } else {
-            keyError.style.display = 'block';
-        }
+        showSpinner('decryptSpinner');
+        setTimeout(() => {
+            const message = document.getElementById('message').value;
+            const key = parseInt(document.getElementById('key').value);
+            const keyError = document.getElementById('keyError');
+            if (!isNaN(key)) {
+                keyError.style.display = 'none';
+                const decryptedMessage = caesarCipher(message, key, false);
+                document.getElementById('output').innerText = decryptedMessage;
+            } else {
+                keyError.style.display = 'block';
+            }
+            hideSpinner('decryptSpinner');
+        }, 500); // Simulate decryption delay
     }
 
     // Copy output text to clipboard
     function copyOutput() {
         const outputText = document.getElementById('output').innerText;
-        if (outputText) {
+        if (outputText && outputText !== "Encrypted/Decrypted text will appear here...") {
             const tempInput = document.createElement('textarea');
             tempInput.value = outputText;
             document.body.appendChild(tempInput);
@@ -110,6 +141,7 @@
         document.getElementById('key').value = 3;
         document.getElementById('output').innerText = 'Encrypted/Decrypted text will appear here...';
         document.getElementById('keyError').style.display = 'none';
+        document.getElementById('charCount').innerText = '0/250 characters';
     }
 </script>
 {% endblock %}
