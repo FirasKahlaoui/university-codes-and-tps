@@ -1,21 +1,28 @@
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Mail
+from flask_bcrypt import Bcrypt
+from flask_login import LoginManager
+from config import Config
 from app.extensions import db, bcrypt, login_manager
 from app.routes import main
 import logging
 from logging.handlers import RotatingFileHandler
 import os
 
+mail = Mail()
 
-def create_app():
+
+def create_app(config_class=Config):
     print("Current Working Directory:", os.getcwd())
     print("Template Folder Path:", os.path.join(os.getcwd(), 'templates'))
 
     app = Flask(__name__, template_folder='templates',
                 static_folder='app/static')
-    app.config['SECRET_KEY'] = 'your_secret_key'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+    app.config.from_object(config_class)
 
     db.init_app(app)
+    mail.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)
 
