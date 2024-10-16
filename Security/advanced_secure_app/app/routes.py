@@ -74,7 +74,7 @@ def admin_dashboard():
                 flash(
                     'An error occurred while creating the user. Please try again.', 'danger')
                 print(f"Error: {e}")
-            return redirect(url_for('main.admin_dashboard'))
+            return redirect(url_for('admin_dashboard'))
     users = User.query.all()
     admins = Admin.query.all()
     logs = Log.query.all()

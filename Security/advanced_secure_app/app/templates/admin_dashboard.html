@@ -162,67 +162,68 @@
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Users List -->
-            <div class="col-md-4">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h3 class="card-title mb-4">Users</h3>
-                        <ul class="list-group">
-                            {% if users %}
-                            {% for user in users %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <span>{{ user.username }} ({{ user.email }})</span>
-                                <button class="btn btn-sm btn-outline-danger">Delete</button>
-                            </li>
-                            {% endfor %}
-                            {% else %}
-                            <li class="list-group-item no-data">No users found.</li>
-                            {% endif %}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Admins List -->
-            <div class="col-md-4">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h3 class="card-title mb-4">Admins</h3>
-                        <ul class="list-group">
-                            {% if admins %}
-                            {% for admin in admins %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <span>{{ admin.username }} ({{ admin.email }})</span>
-                                <button class="btn btn-sm btn-outline-danger">Delete</button>
-                            </li>
-                            {% endfor %}
-                            {% else %}
-                            <li class="list-group-item no-data">No admins found.</li>
-                            {% endif %}
-                        </ul>
-                    </div>
+        <!-- Users List -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title mb-4">Users</h3>
+                    <ul class="list-group">
+                        {% if users %}
+                        {% for user in users %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>{{ user.username }} ({{ user.email }})</span>
+                            <button class="btn btn-sm btn-outline-danger">Delete</button>
+                        </li>
+                        {% endfor %}
+                        {% else %}
+                        <li class="list-group-item no-data">No users found.</li>
+                        {% endif %}
+                    </ul>
                 </div>
             </div>
         </div>
 
-        <!-- Logs List -->
-        <div class="card shadow-sm mb-5">
-            <div class="card-body">
-                <h3 class="card-title mb-4">Logs</h3>
-                <ul class="list-group">
-                    {% if logs %}
-                    {% for log in logs[:5] %} <!-- Show only the first 5 logs -->
-                    <li class="log-item">
-                        <span class="log-timestamp">{{ log.timestamp }}</span> - {{ log.action }}
-                    </li>
-                    {% endfor %}
-                    {% else %}
-                    <li class="list-group-item no-data">No logs available.</li>
-                    {% endif %}
-                </ul>
+        <!-- Admins List -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title mb-4">Admins</h3>
+                    <ul class="list-group">
+                        {% if admins %}
+                        {% for admin in admins %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>{{ admin.username }} ({{ admin.email }})</span>
+                            <button class="btn btn-sm btn-outline-danger">Delete</button>
+                        </li>
+                        {% endfor %}
+                        {% else %}
+                        <li class="list-group-item no-data">No admins found.</li>
+                        {% endif %}
+                    </ul>
+                </div>
             </div>
         </div>
+    </div>
+
+    <!-- Logs List -->
+    <div class="card shadow-sm mb-5">
+        <div class="card-body">
+            <h3 class="card-title mb-4">Logs</h3>
+            <ul class="list-group">
+                {% if logs %}
+                {% for log in logs[:5] %}
+                <li class="log-item">
+                    <span class="log-timestamp">{{ log.timestamp }}</span> - {{ log.action }}
+                </li>
+                {% endfor %}
+                {% else %}
+                <li class="list-group-item no-data">No logs available.</li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
