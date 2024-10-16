@@ -16,7 +16,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
-    is_verified = db.Column(db.Boolean, default=False)
+    totp_secret = db.Column(db.String(16), nullable=True)
 
     def set_password(self, password):
         self.password = generate_password_hash(password)

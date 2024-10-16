@@ -1,12 +1,13 @@
 import os
 import pyotp
-from flask_mail import Message
+import qrcode
+from io import BytesIO
+from flask import send_file
 import logging
 from datetime import datetime
 from app.models import Log
-from app.extensions import db, mail
+from app.extensions import db
 from app.db_handler import DBHandler
-from msal import ConfidentialClientApplication
 
 # Configure the custom DBHandler
 db_handler = DBHandler()
@@ -44,26 +45,30 @@ def log_action(user_id, action):
     logger.info(action, extra={'user_id': user_id})
 
 
+def generate_totp_secret():
+    return pyotp.random_base32()
+
+
+def get_totp_uri(user_email, secret):
+    return pyotp.totp.TOTP(secret).provisioning_uri(user_email, issuer_name="YourAppName")
+
+
+def generate_qr_code(uri):
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(uri)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+    buffer = BytesIO()
+    img.save(buffer, format="PNG")
+    buffer.seek(0)
+    return buffer
+
+
 def generate_otp():
     totp = pyotp.TOTP(pyotp.random_base32())
     return totp.now()
-
-
-def get_oauth2_token():
-    client_id = os.environ.get('CLIENT_ID')
-    client_secret = os.environ.get('CLIENT_SECRET')
-    tenant_id = os.environ.get('TENANT_ID')
-    authority = f"https://login.microsoftonline.com/{tenant_id}"
-    app = ConfidentialClientApplication(
-        client_id, authority=authority, client_credential=client_secret)
-    result = app.acquire_token_for_client(
-        scopes=["https://outlook.office365.com/.default"])
-    return result['access_token']
-
-
-def send_otp(email, otp):
-    token = get_oauth2_token()
-    msg = Message('Your OTP Code', sender=os.environ.get('MAIL_DEFAULT_SENDER'),
-                  recipients=[email])
-    msg.body = f'Your OTP code is {otp}. It will expire in 5 minutes.'
-    mail.send(msg, auth=('user', token))
