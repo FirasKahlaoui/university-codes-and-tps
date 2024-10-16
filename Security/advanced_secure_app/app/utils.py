@@ -1,3 +1,4 @@
+import os
 import pyotp
 from flask_mail import Message
 import logging
@@ -5,6 +6,7 @@ from datetime import datetime
 from app.models import Log
 from app.extensions import db, mail
 from app.db_handler import DBHandler
+from msal import ConfidentialClientApplication
 
 # Configure the custom DBHandler
 db_handler = DBHandler()
@@ -47,8 +49,21 @@ def generate_otp():
     return totp.now()
 
 
+def get_oauth2_token():
+    client_id = os.environ.get('CLIENT_ID')
+    client_secret = os.environ.get('CLIENT_SECRET')
+    tenant_id = os.environ.get('TENANT_ID')
+    authority = f"https://login.microsoftonline.com/{tenant_id}"
+    app = ConfidentialClientApplication(
+        client_id, authority=authority, client_credential=client_secret)
+    result = app.acquire_token_for_client(
+        scopes=["https://outlook.office365.com/.default"])
+    return result['access_token']
+
+
 def send_otp(email, otp):
+    token = get_oauth2_token()
     msg = Message('Your OTP Code', sender=os.environ.get('MAIL_DEFAULT_SENDER'),
                   recipients=[email])
     msg.body = f'Your OTP code is {otp}. It will expire in 5 minutes.'
-    mail.send(msg)
+    mail.send(msg, auth=('user', token))
