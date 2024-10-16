@@ -1,9 +1,9 @@
-from flask import render_template, redirect, url_for, flash, Blueprint, session
+from flask import render_template, redirect, url_for, flash, Blueprint, session, request
 from flask_login import login_user, current_user, login_required, logout_user
 from app.extensions import db, bcrypt
-from app.forms import LoginForm, AdminCreateUserForm
+from app.forms import LoginForm, AdminCreateUserForm, OTPForm
 from app.models import User, Admin, Log
-from app.utils import log_action
+from app.utils import log_action, generate_otp, send_otp
 from app.decorators import nocache
 
 main = Blueprint('main', __name__)
@@ -11,15 +11,32 @@ main = Blueprint('main', __name__)
 
 @main.route("/login", methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.dashboard'))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
-            login_user(user)
-            log_action(user.id, 'Logged in')
-            return redirect(url_for('main.dashboard'))
+            login_user(user, remember=form.remember.data)
+            otp = generate_otp()
+            session['otp'] = otp
+            send_otp(user.email, otp)
+            return redirect(url_for('main.verify_otp'))
         flash('Login Unsuccessful. Please check your email and password', 'danger')
     return render_template('login.html', form=form)
+
+
+@main.route('/verify_otp', methods=['GET', 'POST'])
+def verify_otp():
+    if 'otp' not in session:
+        return redirect(url_for('main.login'))
+    form = OTPForm()
+    if form.validate_on_submit():
+        if form.otp.data == session['otp']:
+            session.pop('otp', None)
+            return redirect(url_for('main.dashboard'))
+        flash('Invalid OTP. Please try again.', 'danger')
+    return render_template('verify_otp.html', form=form)
 
 
 @main.route("/admin_login", methods=['GET', 'POST'])
@@ -48,7 +65,6 @@ def dashboard():
 def admin_dashboard():
     form = AdminCreateUserForm()
     if form.validate_on_submit():
-        # Check if email already exists
         existing_user = User.query.filter_by(email=form.email.data).first(
         ) or Admin.query.filter_by(email=form.email.data).first()
         if existing_user:
