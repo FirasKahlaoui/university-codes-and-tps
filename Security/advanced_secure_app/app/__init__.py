@@ -1,46 +1,45 @@
 from flask import Flask
-from config import Config
-from app.extensions import db, mail, bcrypt, login_manager
-from app.routes import main
-import logging
-from logging.handlers import RotatingFileHandler
+from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
+from flask_login import LoginManager
+from flask_mail import Mail
 from dotenv import load_dotenv
 import os
 
-# Load environment variables from .env file
 load_dotenv()
 
+db = SQLAlchemy()
+bcrypt = Bcrypt()
+login_manager = LoginManager()
+mail = Mail()
 
-def create_app(config_class=Config):
-    # Print debug information
-    print("Current Working Directory:", os.getcwd())
-    print("Template Folder Path:", os.path.join(os.getcwd(), 'templates'))
+def create_app():
+    app = Flask(__name__)
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
+    app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
+    app.config['MAIL_PORT'] = os.getenv('MAIL_PORT')
+    app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS')
+    app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+    app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+    app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 
-    # Create Flask app instance
-    app = Flask(__name__, template_folder='templates',
-                static_folder='app/static')
-    app.config.from_object(config_class)
-
-    # Initialize extensions
     db.init_app(app)
-    mail.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)
+    mail.init_app(app)
 
-    # Register blueprints
+    from app.models import User, Admin, Log
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id)) or Admin.query.get(int(user_id))
+
+    login_manager.login_view = 'main.login'
+    login_manager.login_message_category = 'info'
+
+    from app.routes import main, auth
     app.register_blueprint(main)
-
-    # Configure logging
-    if not os.path.exists('logs'):
-        os.mkdir('logs')
-    file_handler = RotatingFileHandler(
-        'logs/app.log', maxBytes=10240, backupCount=10)
-    file_handler.setFormatter(logging.Formatter(
-        '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
-    file_handler.setLevel(logging.INFO)
-    app.logger.addHandler(file_handler)
-
-    app.logger.setLevel(logging.INFO)
-    app.logger.info('Advanced Secure App startup')
+    app.register_blueprint(auth)
 
     return app
