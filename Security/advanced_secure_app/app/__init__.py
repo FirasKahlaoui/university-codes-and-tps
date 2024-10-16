@@ -8,24 +8,32 @@ from app.extensions import db, bcrypt, login_manager
 from app.routes import main
 import logging
 from logging.handlers import RotatingFileHandler
+from dotenv import load_dotenv
 import os
+
+# Load environment variables from .env file
+load_dotenv()
 
 mail = Mail()
 
 
 def create_app(config_class=Config):
+    # Print debug information
     print("Current Working Directory:", os.getcwd())
     print("Template Folder Path:", os.path.join(os.getcwd(), 'templates'))
 
+    # Create Flask app instance
     app = Flask(__name__, template_folder='templates',
                 static_folder='app/static')
     app.config.from_object(config_class)
 
+    # Initialize extensions
     db.init_app(app)
     mail.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)
 
+    # Register blueprints
     app.register_blueprint(main)
 
     # Configure logging
