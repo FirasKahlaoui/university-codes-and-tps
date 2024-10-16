@@ -17,7 +17,7 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
-            login_user(user, remember=form.remember.data)
+            login_user(user)
             otp = generate_otp()
             session['otp'] = otp
             send_otp(user.email, otp)
@@ -35,7 +35,8 @@ def verify_otp():
         if form.otp.data == session['otp']:
             session.pop('otp', None)
             return redirect(url_for('main.dashboard'))
-        flash('Invalid OTP. Please try again.', 'danger')
+        else:
+            flash('Invalid OTP. Please try again.', 'danger')
     return render_template('verify_otp.html', form=form)
 
 
