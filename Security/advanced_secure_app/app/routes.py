@@ -1,12 +1,13 @@
-from flask import render_template, redirect, url_for, flash, Blueprint, session, request
-from flask_login import login_user, current_user, login_required, logout_user
-from app.extensions import db, bcrypt
-from app.forms import LoginForm, AdminCreateUserForm, OTPForm
-from app.models import User, Admin, Log
-from app.utils import log_action, generate_otp, send_otp
-from app.decorators import nocache
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, send_file
+from flask_login import current_user, login_user, login_required
+from app import db, bcrypt
+from app.models import User
+from app.forms import LoginForm
+from app.utils import generate_totp_secret, get_totp_uri, generate_qr_code
+import pyotp
 
 main = Blueprint('main', __name__)
+auth = Blueprint('auth', __name__)
 
 
 @main.route("/login", methods=['GET', 'POST'])
@@ -18,26 +19,38 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user)
-            otp = generate_otp()
-            session['otp'] = otp
-            send_otp(user.email, otp)
-            return redirect(url_for('main.verify_otp'))
+            return redirect(url_for('auth.verify_2fa'))
         flash('Login Unsuccessful. Please check your email and password', 'danger')
     return render_template('login.html', form=form)
 
 
-@main.route('/verify_otp', methods=['GET', 'POST'])
-def verify_otp():
-    if 'otp' not in session:
-        return redirect(url_for('main.login'))
-    form = OTPForm()
-    if form.validate_on_submit():
-        if form.otp.data == session['otp']:
-            session.pop('otp', None)
+@auth.route('/setup_2fa')
+@login_required
+def setup_2fa():
+    if current_user.totp_secret is None:
+        secret = generate_totp_secret()
+        current_user.totp_secret = secret
+        db.session.commit()
+    else:
+        secret = current_user.totp_secret
+
+    uri = get_totp_uri(current_user.email, secret)
+    qr_code = generate_qr_code(uri)
+    return send_file(qr_code, mimetype='image/png')
+
+
+@auth.route('/verify_2fa', methods=['GET', 'POST'])
+@login_required
+def verify_2fa():
+    if request.method == 'POST':
+        token = request.form.get('token')
+        totp = pyotp.TOTP(current_user.totp_secret)
+        if totp.verify(token):
+            flash('2FA setup successful', 'success')
             return redirect(url_for('main.dashboard'))
         else:
-            flash('Invalid OTP. Please try again.', 'danger')
-    return render_template('verify_otp.html', form=form)
+            flash('Invalid token, please try again', 'danger')
+    return render_template('verify_2fa.html')
 
 
 @main.route("/admin_login", methods=['GET', 'POST'])
