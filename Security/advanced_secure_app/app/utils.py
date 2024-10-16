@@ -1,3 +1,6 @@
+import pyotp
+from flask_mail import Message
+from . import mail
 import logging
 from datetime import datetime
 from app.models import Log
@@ -38,3 +41,15 @@ def log_action(user_id, action):
 
     # Log to file and database
     logger.info(action, extra={'user_id': user_id})
+
+
+def generate_otp():
+    totp = pyotp.TOTP(pyotp.random_base32())
+    return totp.now()
+
+
+def send_otp(email, otp):
+    msg = Message('Your OTP Code', sender='noreply@demo.com',
+                  recipients=[email])
+    msg.body = f'Your OTP code is {otp}. It will expire in 5 minutes.'
+    mail.send(msg)
