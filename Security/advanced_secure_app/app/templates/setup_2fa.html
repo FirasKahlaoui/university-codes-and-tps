@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Setup 2FA</title>
+</head>
+
+<body>
+    <h1>Setup 2FA</h1>
+    <p>Scan the QR code below with your authenticator app:</p>
+    <img src="{{ url_for('auth.setup_2fa') }}" alt="QR Code">
+    <form action="{{ url_for('auth.verify_2fa') }}" method="post">
+        <label for="token">Enter the code from your app:</label>
+        <input type="text" id="token" name="token">
+        <button type="submit">Verify</button>
+    </form>
+</body>
+
+</html>
