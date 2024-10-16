@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <h2 class="text-center mt-5">Verify OTP</h2>
+        <form method="POST" action="{{ url_for('main.verify_otp') }}">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.otp.label(class="form-label") }}
+                {{ form.otp(class="form-control") }}
+            </div>
+            <button type="submit" class="btn btn-primary">Verify</button>
+        </form>
+    </div>
+</body>
+
+</html>
