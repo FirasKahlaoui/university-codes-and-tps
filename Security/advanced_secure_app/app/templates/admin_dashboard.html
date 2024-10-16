@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             background-color: #f8f9fa;
@@ -34,13 +33,9 @@
             color: #007bff;
         }
 
-        .navbar-nav {
-            margin-left: auto;
-        }
-
         .container {
-            max-width: 900px;
-            margin-top: 50px;
+            max-width: 1200px;
+            margin-top: 30px;
         }
 
         h2 {
@@ -68,16 +63,11 @@
             color: white;
         }
 
-        .log-item {
-            border-left: 4px solid #007bff;
-            padding-left: 15px;
-            margin-bottom: 10px;
-            background-color: #f1f1f1;
-            border-radius: 5px;
-        }
-
-        .log-timestamp {
-            font-weight: bold;
+        .form-section {
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .no-data {
@@ -95,12 +85,12 @@
             <a class="navbar-brand" href="{{ url_for('index') }}">
                 <i class="fas fa-shield-alt"></i> Secure Cipher
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ml-auto">
                     {% if current_user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('main.logout') }}">
@@ -109,7 +99,7 @@
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link active" href="{{ url_for('main.login') }}">
+                        <a class="nav-link" href="{{ url_for('main.login') }}">
                             <i class="fas fa-user-lock"></i> User Login
                         </a>
                     </li>
@@ -130,134 +120,138 @@
 
         <div class="row">
             <!-- Create User Form -->
-            <div class="col-md-4">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h3 class="card-title text-center mb-4">Create New User</h3>
-                        <form method="POST">
-                            {{ form.hidden_tag() }}
-                            <div class="mb-3">
-                                {{ form.username.label(class="form-label", style="font-size: 1.1rem;") }}
-                                {{ form.username(class="form-control form-control-lg", placeholder="Enter username") }}
-                            </div>
-                            <div class="mb-3">
-                                {{ form.email.label(class="form-label", style="font-size: 1.1rem;") }}
-                                {{ form.email(class="form-control form-control-lg", placeholder="Enter email") }}
-                            </div>
-                            <div class="mb-3">
-                                {{ form.password.label(class="form-label", style="font-size: 1.1rem;") }}
-                                {{ form.password(class="form-control form-control-lg", placeholder="Enter password") }}
-                            </div>
-                            <div class="mb-3">
-                                {{ form.confirm_password.label(class="form-label", style="font-size: 1.1rem;") }}
-                                {{ form.confirm_password(class="form-control form-control-lg", placeholder="Confirm
-                                password") }}
-                            </div>
-                            <div class="mb-3 form-check">
-                                {{ form.is_admin(class="form-check-input") }}
-                                {{ form.is_admin.label(class="form-check-label", style="font-size: 1.1rem;") }}
-                            </div>
-                            <button type="submit" class="btn btn-success w-100"
-                                style="padding: 0.75rem; font-size: 1.1rem;">Create User</button>
-                        </form>
-                    </div>
+            <div class="col-md-6">
+                <div class="form-section">
+                    <h3 class="card-title text-center mb-4">Create New User</h3>
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            {{ form.username.label(class="form-label", style="font-size: 1.1rem;") }}
+                            {{ form.username(class="form-control", placeholder="Enter username") }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.email.label(class="form-label", style="font-size: 1.1rem;") }}
+                            {{ form.email(class="form-control", placeholder="Enter email") }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.password.label(class="form-label", style="font-size: 1.1rem;") }}
+                            {{ form.password(class="form-control", placeholder="Enter password") }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.confirm_password.label(class="form-label", style="font-size: 1.1rem;") }}
+                            {{ form.confirm_password(class="form-control", placeholder="Confirm password") }}
+                        </div>
+                        <div class="mb-3 form-check">
+                            {{ form.is_admin(class="form-check-input") }}
+                            {{ form.is_admin.label(class="form-check-label", style="font-size: 1.1rem;") }}
+                        </div>
+                        <button type="submit" class="btn btn-success w-100"
+                            style="padding: 0.75rem; font-size: 1.1rem;">
+                            Create User
+                        </button>
+                    </form>
                 </div>
             </div>
-        </div>
 
-        <!-- Users List -->
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h3 class="card-title mb-4">Users</h3>
-                    <ul class="list-group">
-                        {% if users %}
-                        {% for user in users %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span>{{ user.username }} ({{ user.email }})</span>
-                            <button class="btn btn-sm btn-outline-danger">Delete</button>
-                        </li>
-                        {% endfor %}
-                        {% else %}
-                        <li class="list-group-item no-data">No users found.</li>
-                        {% endif %}
-                    </ul>
+            <!-- Users List -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">Users</h3>
+                        <ul class="list-group">
+                            {% if users %}
+                            {% for user in users %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>{{ user.username }} ({{ user.email }})</span>
+                                <button class="btn btn-sm btn-outline-danger">Delete</button>
+                            </li>
+                            {% endfor %}
+                            {% else %}
+                            <li class="list-group-item no-data">No users found.</li>
+                            {% endif %}
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Admins List -->
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h3 class="card-title mb-4">Admins</h3>
-                    <ul class="list-group">
-                        {% if admins %}
-                        {% for admin in admins %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span>{{ admin.username }} ({{ admin.email }})</span>
-                            <button class="btn btn-sm btn-outline-danger">Delete</button>
-                        </li>
-                        {% endfor %}
-                        {% else %}
-                        <li class="list-group-item no-data">No admins found.</li>
-                        {% endif %}
-                    </ul>
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">Admins</h3>
+                        <ul class="list-group">
+                            {% if admins %}
+                            {% for admin in admins %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>{{ admin.username }} ({{ admin.email }})</span>
+                                <button class="btn btn-sm btn-outline-danger">Delete</button>
+                            </li>
+                            {% endfor %}
+                            {% else %}
+                            <li class="list-group-item no-data">No admins found.</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logs List -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">Logs</h3>
+                        <ul class="list-group">
+                            {% if logs %}
+                            {% for log in logs[:5] %}
+                            <li class="list-group-item">
+                                <span class="font-weight-bold">{{ log.timestamp }}</span> - {{ log.action }}
+                            </li>
+                            {% endfor %}
+                            {% else %}
+                            <li class="list-group-item no-data">No logs available.</li>
+                            {% endif %}
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Logs List -->
-    <div class="card shadow-sm mb-5">
-        <div class="card-body">
-            <h3 class="card-title mb-4">Logs</h3>
-            <ul class="list-group">
-                {% if logs %}
-                {% for log in logs[:5] %}
-                <li class="log-item">
-                    <span class="log-timestamp">{{ log.timestamp }}</span> - {{ log.action }}
-                </li>
-                {% endfor %}
-                {% else %}
-                <li class="list-group-item no-data">No logs available.</li>
-                {% endif %}
-            </ul>
-        </div>
-    </div>
+    <div aria-live="polite" aria-atomic="true" style="position: relative; z-index: 9999;">
+        <div id="toast-container" style="position: fixed; bottom: 20px; right: 20px;"></div>
     </div>
 
-    <div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;">
-        <div id="toast-container" style="position: absolute; top: 0; right: 0;"></div>
-    </div>
-
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <script>
-        function showToast(message, type) {
-            const toastHTML = `
-                <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
-                    <div class="toast-header">
-                        <strong class="mr-auto">${type === 'success' ? 'Success' : 'Error'}</strong>
-                        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="toast-body">
-                        ${message}
-                    </div>
-                </div>
-            `;
+        document.addEventListener('DOMContentLoaded', function () {
+            const messages = `{{ get_flashed_messages(with_categories=true) | tojson }}`;
+
+            if (messages) {
+                messages.forEach(([category, message]) => {
+                    showToast(message, category);
+                });
+            }
+        });
+
+        function showToast(message, category) {
             const toastContainer = document.getElementById('toast-container');
-            toastContainer.innerHTML = toastHTML;
-            $('.toast').toast('show');
+            const toast = document.createElement('div');
+            toast.classList.add('toast', 'show', `bg-${category}`);
+            toast.style.cssText = 'min-width: 250px; padding: 15px; border-radius: 5px; margin-bottom: 15px;';
+            toast.innerHTML = `<strong>${category}</strong>: ${message}`;
+            toastContainer.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 5000);
         }
     </script>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>
