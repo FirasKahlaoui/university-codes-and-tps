@@ -48,7 +48,7 @@ def generate_otp():
 
 
 def send_otp(email, otp):
-    msg = Message('Your OTP Code', sender='noreply@demo.com',
+    msg = Message('Your OTP Code', sender=os.environ.get('MAIL_DEFAULT_SENDER'),
                   recipients=[email])
     msg.body = f'Your OTP code is {otp}. It will expire in 5 minutes.'
     mail.send(msg)
