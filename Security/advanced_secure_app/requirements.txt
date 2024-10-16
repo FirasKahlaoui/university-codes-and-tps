@@ -6,3 +6,6 @@ cryptography==36.0.1
 Werkzeug==2.0.1
 SQLAlchemy==1.4.27
 Flask-WTF==0.15.1
+Flask-Mail==0.9.1
+python-dotenv==0.19.2
+pyotp==2.6.0
