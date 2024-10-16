@@ -231,6 +231,27 @@
         <div id="toast-container" style="position: absolute; top: 0; right: 0;"></div>
     </div>
 
+    <script>
+        function showToast(message, type) {
+            const toastHTML = `
+                <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
+                    <div class="toast-header">
+                        <strong class="mr-auto">${type === 'success' ? 'Success' : 'Error'}</strong>
+                        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                </div>
+            `;
+            const toastContainer = document.getElementById('toast-container');
+            toastContainer.innerHTML = toastHTML;
+            $('.toast').toast('show');
+        }
+    </script>
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
