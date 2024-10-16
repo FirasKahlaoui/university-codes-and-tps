@@ -1,9 +1,10 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, send_file
-from flask_login import current_user, login_user, login_required
+from flask_login import current_user, login_user, login_required, logout_user
 from app import db, bcrypt
-from app.models import User
-from app.forms import LoginForm
-from app.utils import generate_totp_secret, get_totp_uri, generate_qr_code
+from app.models import User, Admin, Log
+from app.forms import LoginForm, AdminCreateUserForm
+from app.utils import generate_totp_secret, get_totp_uri, generate_qr_code, log_action
+from app.decorators import nocache
 import pyotp
 
 main = Blueprint('main', __name__)
