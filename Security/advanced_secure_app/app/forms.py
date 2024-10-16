@@ -8,6 +8,10 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Login')
 
+class OTPForm(FlaskForm):
+    otp = StringField('OTP', validators=[DataRequired(), Length(6, 6)])
+    submit = SubmitField('Verify')
+
 
 class AdminCreateUserForm(FlaskForm):
     username = StringField('Username', validators=[
