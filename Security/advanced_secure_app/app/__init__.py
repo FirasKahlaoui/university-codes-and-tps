@@ -1,10 +1,6 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_mail import Mail
-from flask_bcrypt import Bcrypt
-from flask_login import LoginManager
 from config import Config
-from app.extensions import db, bcrypt, login_manager
+from app.extensions import db, mail, bcrypt, login_manager
 from app.routes import main
 import logging
 from logging.handlers import RotatingFileHandler
@@ -13,8 +9,6 @@ import os
 
 # Load environment variables from .env file
 load_dotenv()
-
-mail = Mail()
 
 
 def create_app(config_class=Config):

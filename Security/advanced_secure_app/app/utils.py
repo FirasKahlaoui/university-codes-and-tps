@@ -1,10 +1,9 @@
 import pyotp
 from flask_mail import Message
-from . import mail
 import logging
 from datetime import datetime
 from app.models import Log
-from app.extensions import db
+from app.extensions import db, mail
 from app.db_handler import DBHandler
 
 # Configure the custom DBHandler
