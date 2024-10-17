@@ -83,7 +83,7 @@
             <div class="col-md-6">
                 <div class="card shadow-lg">
                     <div class="card-header text-center bg-primary text-white">
-                        <h2 class="display-6">Caesar Cipher</h2>
+                        <h2 class="display-6">AES Encryption</h2>
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
@@ -93,11 +93,10 @@
                             <small id="charCount" class="form-text text-muted">Max 250 characters</small>
                         </div>
                         <div class="mb-3">
-                            <label for="key" class="form-label">Shift Value:</label>
-                            <input type="number" class="form-control" id="key" value="3">
-                            <div id="keyError" class="text-danger mt-2" style="display: none;">Please enter a valid
-                                shift
-                                value.</div>
+                            <label for="key" class="form-label">Key:</label>
+                            <input type="text" class="form-control" id="key" placeholder="Enter a 16-character key">
+                            <div id="keyError" class="text-danger mt-2" style="display: none;">Please enter a valid key.
+                            </div>
                         </div>
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                             <button class="btn btn-primary me-md-2" onclick="encryptMessage()">
@@ -139,17 +138,38 @@
             charCount.innerText = `${this.value.length}/250 characters`;
         });
 
-        function caesarCipher(str, shift, encrypt = true) {
-            if (!encrypt) shift = -shift; // Inverse the shift for decryption
-
-            return Array.from(str).map(char => {
-                const code = char.charCodeAt();
-                if (code >= 32 && code <= 126) {
-                    return String.fromCharCode(((code - 32 + shift) % 95 + 95) % 95 + 32);
+        function encryptMessage() {
+            showSpinner('encryptSpinner');
+            setTimeout(() => {
+                const message = document.getElementById('message').value;
+                const key = document.getElementById('key').value;
+                const keyError = document.getElementById('keyError');
+                if (key.length === 16) {
+                    keyError.style.display = 'none';
+                    const encryptedMessage = CryptoJS.AES.encrypt(message, key).toString();
+                    document.getElementById('output').innerText = encryptedMessage;
                 } else {
-                    return char;
+                    keyError.style.display = 'block';
                 }
-            }).join('');
+                hideSpinner('encryptSpinner');
+            }, 500);
+        }
+
+        function decryptMessage() {
+            showSpinner('decryptSpinner');
+            setTimeout(() => {
+                const message = document.getElementById('output').value;
+                const key = document.getElementById('key').value;
+                const keyError = document.getElementById('keyError');
+                if (key.length === 16) {
+                    keyError.style.display = 'none';
+                    const decryptedMessage = CryptoJS.AES.decrypt(message, key).toString(CryptoJS.enc.Utf8);
+                    document.getElementById('output').innerText = decryptedMessage;
+                } else {
+                    keyError.style.display = 'block';
+                }
+                hideSpinner('decryptSpinner');
+            }, 500);
         }
 
         // Show a loading spinner
@@ -160,42 +180,6 @@
         // Hide a loading spinner
         function hideSpinner(id) {
             document.getElementById(id).style.display = 'none';
-        }
-
-        // Encrypt message
-        function encryptMessage() {
-            showSpinner('encryptSpinner');
-            setTimeout(() => {
-                const message = document.getElementById('message').value;
-                const key = parseInt(document.getElementById('key').value);
-                const keyError = document.getElementById('keyError');
-                if (!isNaN(key)) {
-                    keyError.style.display = 'none';
-                    const encryptedMessage = caesarCipher(message, key, true);
-                    document.getElementById('output').innerText = encryptedMessage;
-                } else {
-                    keyError.style.display = 'block';
-                }
-                hideSpinner('encryptSpinner');
-            }, 500);
-        }
-
-        // Decrypt message
-        function decryptMessage() {
-            showSpinner('decryptSpinner');
-            setTimeout(() => {
-                const message = document.getElementById('message').value;
-                const key = parseInt(document.getElementById('key').value);
-                const keyError = document.getElementById('keyError');
-                if (!isNaN(key)) {
-                    keyError.style.display = 'none';
-                    const decryptedMessage = caesarCipher(message, key, false);
-                    document.getElementById('output').innerText = decryptedMessage;
-                } else {
-                    keyError.style.display = 'block';
-                }
-                hideSpinner('decryptSpinner');
-            }, 500);
         }
 
         // Copy output to clipboard

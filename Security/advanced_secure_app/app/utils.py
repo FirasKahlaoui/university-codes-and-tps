@@ -3,6 +3,9 @@ from datetime import datetime
 from app.models import Log
 from app.extensions import db
 from app.db_handler import DBHandler
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
+import base64
 
 # Configure the custom DBHandler
 db_handler = DBHandler()
@@ -11,21 +14,20 @@ logger = logging.getLogger('db_logger')
 logger.addHandler(db_handler)
 
 
-def encrypt_text(plaintext, shift):
-    encrypted = ""
-    for char in plaintext:
-        # Shift character using Unicode values
-        shifted = ord(char) + shift
-        encrypted += chr(shifted)
-    return encrypted
+def encrypt_text(plaintext, key):
+    cipher = AES.new(key.encode('utf-8'), AES.MODE_CBC)
+    ct_bytes = cipher.encrypt(pad(plaintext.encode('utf-8'), AES.block_size))
+    iv = base64.b64encode(cipher.iv).decode('utf-8')
+    ct = base64.b64encode(ct_bytes).decode('utf-8')
+    return iv + ct
 
 
-def decrypt_text(encrypted_text, shift):
-    decrypted = ""
-    for char in encrypted_text:
-        shifted = ord(char) - shift
-        decrypted += chr(shifted)
-    return decrypted
+def decrypt_text(encrypted_text, key):
+    iv = base64.b64decode(encrypted_text[:24])
+    ct = base64.b64decode(encrypted_text[24:])
+    cipher = AES.new(key.encode('utf-8'), AES.MODE_CBC, iv)
+    pt = unpad(cipher.decrypt(ct), AES.block_size)
+    return pt.decode('utf-8')
 
 # Log user actions
 
