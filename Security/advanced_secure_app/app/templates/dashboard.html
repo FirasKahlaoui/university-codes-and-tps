@@ -4,11 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Caesar Cipher Dashboard</title>
+    <title>AES Encryption Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
     <style>
         nav {
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -158,7 +159,7 @@
         function decryptMessage() {
             showSpinner('decryptSpinner');
             setTimeout(() => {
-                const message = document.getElementById('output').value;
+                const message = document.getElementById('output').innerText;
                 const key = document.getElementById('key').value;
                 const keyError = document.getElementById('keyError');
                 if (key.length === 16) {
@@ -193,7 +194,7 @@
         // Clear fields
         function clearFields() {
             document.getElementById('message').value = '';
-            document.getElementById('key').value = 3;
+            document.getElementById('key').value = '';
             document.getElementById('output').innerText = 'Encrypted/Decrypted text will appear here...';
             document.getElementById('keyError').style.display = 'none';
             document.getElementById('charCount').innerText = '0/250 characters';
