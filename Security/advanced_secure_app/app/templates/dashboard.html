@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AES Encryption Dashboard</title>
+    <title>Caesar Cipher Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -43,111 +43,63 @@
 </head>
 
 <body>
-
-    <nav class="navbar navbar-expand-lg navbar-light bg-light py-3">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{{ url_for('index') }}">
-                <i class="fas fa-shield-alt"></i> Secure Cipher
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    {% if current_user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.logout') }}">
-                            <i class="fas fa-sign-out-alt"></i> Logout
-                        </a>
-                    </li>
-                    {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{{ url_for('main.login') }}">
-                            <i class="fas fa-user-lock"></i> User Login
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.admin_login') }}">
-                            <i class="fas fa-user-shield"></i> Admin Login
-                        </a>
-                    </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Dashboard</a>
     </nav>
-
     <div class="container mt-5">
-        <div class="row">
-            <!-- Part 1: Input -->
-            <div class="col-md-6">
-                <div class="card shadow-lg">
-                    <div class="card-header text-center bg-primary text-white">
-                        <h2 class="display-6">AES Encryption</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <label for="message" class="form-label">Enter Text:</label>
-                            <textarea class="form-control" id="message" rows="3" placeholder="Type your message... 🔒"
-                                maxlength="250"></textarea>
-                            <small id="charCount" class="form-text text-muted">Max 250 characters</small>
-                        </div>
-                        <div class="mb-3">
-                            <label for="key" class="form-label">Key:</label>
-                            <input type="text" class="form-control" id="key" placeholder="Enter a 16-character key">
-                            <div id="keyError" class="text-danger mt-2" style="display: none;">Please enter a valid key.
-                            </div>
-                        </div>
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <button class="btn btn-primary me-md-2" onclick="encryptMessage()">
-                                Encrypt <span id="encryptSpinner" class="spinner-border spinner-border-sm" role="status"
-                                    aria-hidden="true" style="display: none;"></span>
-                            </button>
-                            <button class="btn btn-secondary" onclick="decryptMessage()">
-                                Decrypt <span id="decryptSpinner" class="spinner-border spinner-border-sm" role="status"
-                                    aria-hidden="true" style="display: none;"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Part 2: Output Result -->
-            <div class="col-md-6">
-                <div class="card shadow">
-                    <div class="card-header text-center bg-secondary text-white">
-                        <h2 class="display-6">Output Result</h2>
-                    </div>
-                    <div class="card-body">
-                        <div id="output" class="alert alert-secondary text-break" role="alert">
-                            Encrypted/Decrypted text will appear here...
-                        </div>
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <button class="btn btn-success me-md-2" onclick="copyOutput()">Copy Output</button>
-                            <button class="btn btn-warning" onclick="clearFields()">Clear Fields</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="mb-3">
+            <label for="message" class="form-label">Message:</label>
+            <textarea class="form-control" id="message" rows="3" placeholder="Type your message... 🔒"
+                maxlength="250"></textarea>
+            <small id="charCount" class="form-text text-muted">Max 250 characters</small>
+        </div>
+        <div class="mb-3">
+            <label for="key" class="form-label">Key:</label>
+            <input type="text" class="form-control" id="key" placeholder="Enter a key">
+            <div id="keyError" class="text-danger mt-2" style="display: none;">Please enter a valid key.</div>
+        </div>
+        <div class="mb-3">
+            <label for="keySize" class="form-label">Key Size:</label>
+            <select class="form-control" id="keySize">
+                <option value="128">128-bit</option>
+                <option value="192">192-bit</option>
+                <option value="256">256-bit</option>
+            </select>
+        </div>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button class="btn btn-primary me-md-2" onclick="encryptMessage()">
+                Encrypt <span id="encryptSpinner" class="spinner-border spinner-border-sm" role="status"
+                    aria-hidden="true" style="display: none;"></span>
+            </button>
+            <button class="btn btn-secondary" onclick="decryptMessage()">
+                Decrypt <span id="decryptSpinner" class="spinner-border spinner-border-sm" role="status"
+                    aria-hidden="true" style="display: none;"></span>
+            </button>
+        </div>
+        <div class="mt-3">
+            <label for="output" class="form-label">Output:</label>
+            <textarea class="form-control" id="output" rows="3" readonly></textarea>
         </div>
     </div>
-
     <script>
-        document.getElementById('message').addEventListener('input', function () {
-            const charCount = document.getElementById('charCount');
-            charCount.innerText = `${this.value.length}/250 characters`;
-        });
+        function showSpinner(id) {
+            document.getElementById(id).style.display = 'inline-block';
+        }
+
+        function hideSpinner(id) {
+            document.getElementById(id).style.display = 'none';
+        }
 
         function encryptMessage() {
             showSpinner('encryptSpinner');
             setTimeout(() => {
                 const message = document.getElementById('message').value;
                 const key = document.getElementById('key').value;
+                const keySize = parseInt(document.getElementById('keySize').value);
                 const keyError = document.getElementById('keyError');
-                if (key.length === 16) {
+                if (key.length > 0) {
                     keyError.style.display = 'none';
-                    const encryptedMessage = CryptoJS.AES.encrypt(message, key).toString();
+                    const encryptedMessage = CryptoJS.AES.encrypt(message, CryptoJS.enc.Utf8.parse(key.padEnd(keySize / 8, '\0').slice(0, keySize / 8))).toString();
                     document.getElementById('output').innerText = encryptedMessage;
                 } else {
                     keyError.style.display = 'block';
@@ -159,12 +111,13 @@
         function decryptMessage() {
             showSpinner('decryptSpinner');
             setTimeout(() => {
-                const message = document.getElementById('output').innerText;
+                const message = document.getElementById('output').value;
                 const key = document.getElementById('key').value;
+                const keySize = parseInt(document.getElementById('keySize').value);
                 const keyError = document.getElementById('keyError');
-                if (key.length === 16) {
+                if (key.length > 0) {
                     keyError.style.display = 'none';
-                    const decryptedMessage = CryptoJS.AES.decrypt(message, key).toString(CryptoJS.enc.Utf8);
+                    const decryptedMessage = CryptoJS.AES.decrypt(message, CryptoJS.enc.Utf8.parse(key.padEnd(keySize / 8, '\0').slice(0, keySize / 8))).toString(CryptoJS.enc.Utf8);
                     document.getElementById('output').innerText = decryptedMessage;
                 } else {
                     keyError.style.display = 'block';
@@ -172,35 +125,7 @@
                 hideSpinner('decryptSpinner');
             }, 500);
         }
-
-        // Show a loading spinner
-        function showSpinner(id) {
-            document.getElementById(id).style.display = 'inline-block';
-        }
-
-        // Hide a loading spinner
-        function hideSpinner(id) {
-            document.getElementById(id).style.display = 'none';
-        }
-
-        // Copy output to clipboard
-        function copyOutput() {
-            const outputText = document.getElementById('output').innerText;
-            navigator.clipboard.writeText(outputText).then(() => {
-                alert('Output copied to clipboard!');
-            });
-        }
-
-        // Clear fields
-        function clearFields() {
-            document.getElementById('message').value = '';
-            document.getElementById('key').value = '';
-            document.getElementById('output').innerText = 'Encrypted/Decrypted text will appear here...';
-            document.getElementById('keyError').style.display = 'none';
-            document.getElementById('charCount').innerText = '0/250 characters';
-        }
     </script>
-
 </body>
 
 </html>
