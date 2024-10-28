@@ -1,0 +1,75 @@
+// a. Afficher toutes les collections de la base
+show collections
+
+// b. Afficher tous les documents de la base
+db.employes.find().pretty()
+
+// c. Compter le nombre de documents de la collection employes
+db.employes.countDocuments()
+
+// d. Insérer de deux manières différentes deux employés
+db.employes.insertOne({ nom: "Dupont", prenom: "Jean", prime: 1000 })
+db.employes.insertOne({ nom: "Martin", prenom: "Paul", anciennete: 5 })
+
+// e. Afficher la liste des employés dont le prénom est David
+db.employes.find({ prenom: "David" }).pretty()
+
+// f. Afficher la liste des employés dont le prénom commence ou se termine par D
+db.employes.find({ prenom: { $regex: /^D|D$/ } }).pretty()
+
+// g. Afficher la liste des personnes dont le prénom commence par D et contient exactement 5 lettres
+db.employes.find({ prenom: { $regex: /^D.{4}$/ } }).pretty()
+
+// h. Afficher la liste des personnes dont le prénom commence et se termine par une voyelle
+db.employes.find({ prenom: { $regex: /^[aeiouAEIOU].*[aeiouAEIOU]$/ } }).pretty()
+
+// i. Afficher la liste des personnes dont le prénom commence et se termine par une même lettre
+db.employes.find({ prenom: { $regex: /^(.).*\1$/ } }).pretty()
+
+// j. Afficher le nom et prénom de chaque employé ayant une ancienneté > 10
+db.employes.find({ anciennete: { $gt: 10 } }, { projection: { nom: 1, prenom: 1 } }).pretty()
+
+// k. Afficher les nom et adresse complète des employés ayant un attribut rue dans l’objet adresse
+db.employes.find({ "adresse.rue": { $exists: true } }, { projection: { nom: 1, adresse: 1 } }).pretty()
+
+// l. Incrémenter de 200 la prime des employés ayant déjà le champ prime
+db.employes.updateMany({ prime: { $exists: true } }, { $inc: { prime: 200 } })
+
+// m. Afficher les trois premières personnes ayant la plus grande valeur d’ancienneté
+db.employes.find().sort({ anciennete: -1 }).limit(3).pretty()
+
+// n. Regrouper les personnes dont la ville de résidence est Toulouse (afficher nom, prénom et ancienneté)
+db.employes.find({ "adresse.ville": "Toulouse" }, { projection: { nom: 1, prenom: 1, anciennete: 1 } }).pretty()
+
+// o. Afficher les personnes dont le prénom commence par M et la ville de résidence est soit Foix soit Bordeaux
+db.employes.find({ prenom: { $regex: /^M/ }, "adresse.ville": { $in: ["Foix", "Bordeaux"] } }).pretty()
+
+// p. Mettre à jour l’adresse de Dominique Mani
+db.employes.updateOne({ nom: "Mani", prenom: "Dominique" }, { $set: { adresse: { numero: 20, ville: "Marseille", codepostal: "13015" } } })
+
+// q. Attribuer une prime de 1 500 à tous les employés n’ayant pas de prime et dont la ville de résidence est différente de Toulouse, Bordeaux et Paris
+db.employes.updateMany({ prime: { $exists: false }, "adresse.ville": { $nin: ["Toulouse", "Bordeaux", "Paris"] } }, { $set: { prime: 1500 } })
+
+// r. Remplacer le champ tel par un tableau téléphone
+db.employes.updateMany({ tel: { $exists: true } }, [
+  { $set: { telephone: ["$tel"] } },
+  { $unset: "tel" }
+])
+
+// s. Créer un champ prime pour les documents qui n’en disposent pas et de l’affecter à 100 * nombre de caractère du nom de la ville
+db.employes.updateMany({ prime: { $exists: false } }, [
+  { $set: { prime: { $multiply: [{ $strLenCP: "$adresse.ville" }, 100] } } }
+])
+
+// t. Créer un champ mail
+db.employes.updateMany({ telephone: { $exists: false } }, [
+  { $set: { mail: { $concat: ["$nom", ".", "$prenom", "@formation.fr"] } } }
+])
+db.employes.updateMany({ telephone: { $exists: true } }, [
+  { $set: { mail: { $concat: ["$prenom", ".", "$nom", "@formation.fr"] } } }
+])
+
+// u. Calculer et afficher la somme de l’ancienneté pour les employés disposant du même prénom
+db.employes.aggregate([
+  { $group: { _id: "$prenom", totalAnciennete: { $sum: "$anciennete" } } }
+])
