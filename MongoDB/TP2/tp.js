@@ -15,6 +15,25 @@ async function run() {
     const db = client.db("employee");
     const collection = db.collection("employes");
 
+    // Grant roles to the user
+    await db.command({
+      grantRolesToUser: "FirasKahlaoui",
+      roles: [{ role: "readWrite", db: "employee" }],
+    });
+
+    // Restore the database
+    exec(
+      'mongorestore --username FirasKahlaoui --password EmmaLove --authenticationDatabase admin -d employee "C:\\Users\\Kahla\\OneDrive\\Documents\\TP Security\\university-codes-and-tps\\MongoDB\\TP2\\employes"',
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error(`exec error: ${error}`);
+          return;
+        }
+        console.log(`stdout: ${stdout}`);
+        console.error(`stderr: ${stderr}`);
+      }
+    );
+
     // a. Afficher toutes les collections de la base
     const collections = await db.listCollections().toArray();
     console.log(
