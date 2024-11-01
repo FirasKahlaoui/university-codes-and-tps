@@ -18,7 +18,7 @@ db.employes.countDocuments()
 d. Insérer de deux manières différentes deux employés
 
 db.employes.insertOne({ nom: "Dupont", prenom: "Jean", prime: 1000 })
-db.employes.insertOne({ nom: "Martin", prenom: "Paul", anciennete: 5 })
+db.employes.insertMany({ nom: "Martin", prenom: "Paul", anciennete: 5 })
 
 e. Afficher la liste des employés dont le prénom est David
 
@@ -42,11 +42,11 @@ db.employes.find({ prenom: { $regex: /^(.).*\1$/ } }).pretty()
 
 j. Afficher le nom et prénom de chaque employé ayant une ancienneté > 10
 
-db.employes.find({ anciennete: { $gt: 10 } }, { projection: { nom: 1, prenom: 1 } }).pretty()
+db.employes.find({ anciennete: { $gt: 10 } }, { nom: 1, prenom: 1 }).pretty()
 
 k. Afficher les nom et adresse complète des employés ayant un attribut rue dans l’objet adresse
 
-db.employes.find({ "adresse.rue": { $exists: true } }, { projection: { nom: 1, adresse: 1 } }).pretty()
+db.employes.find({ "adresse.rue": { $exists: true } }, { nom: 1, adresse: 1 }).pretty()
 
 l. Incrémenter de 200 la prime des employés ayant déjà le champ prime
 
@@ -58,7 +58,7 @@ db.employes.find().sort({ anciennete: -1 }).limit(3).pretty()
 
 n. Regrouper les personnes dont la ville de résidence est Toulouse (afficher nom, prénom et ancienneté)
 
-db.employes.find({ "adresse.ville": "Toulouse" }, { projection: { nom: 1, prenom: 1, anciennete: 1 } }).pretty()
+db.employes.find({ "adresse.ville": "Toulouse" }, { nom: 1, prenom: 1, anciennete: 1 }).pretty()
 
 o. Afficher les personnes dont le prénom commence par M et la ville de résidence est soit Foix soit Bordeaux
 
